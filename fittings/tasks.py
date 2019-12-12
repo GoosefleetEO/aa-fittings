@@ -101,12 +101,10 @@ def populate_types():
 
     operation = c.Universe.get_universe_types()
     operation.also_return_response = True
-    print("Getting page 1")
     _, response = operation.result()
     pages = int(response.headers['x-pages'])
 
     for page in range(1, pages + 1):
-        print('Dispatching task for page {}'.format(page))
         types_page.delay(page)
 
 
