@@ -96,8 +96,11 @@ def create_fit(eft_text, description=None):
 
 @shared_task
 def populate_types():
+    # Get all type ids currently in the db
+    ids = list(Type.objects.all().values_list('type_id', flat=True))
+
     # Get all the type IDs.
-    c = esi_client_factory(version='latest')
+    c = esi_client_factory(version='dev')
 
     operation = c.Universe.get_universe_types()
     operation.also_return_response = True
@@ -105,18 +108,15 @@ def populate_types():
     pages = int(response.headers['x-pages'])
 
     for page in range(1, pages + 1):
-        types_page.delay(page)
+        types_page.delay(page, ids)
 
 
-@shared_task
-def types_page(page):
-    c = esi_client_factory(version='latest')
-
-    type_ids = c.Universe.get_universe_types(page=page).result()
+def __get_types_and_dogma_esi(id_list):
+    c = esi_client_factory(version='dev')
 
     dogma = {}
     types = []
-    for type_id in type_ids:
+    for type_id in id_list:
         try:
             type_result = c.Universe.get_universe_types_type_id(type_id=type_id).result()
             if type_result.get('published') is False:
@@ -129,6 +129,22 @@ def types_page(page):
             dogma[type_id] = {'effects': effects, 'attributes': attributes}
         except:
             pass
+
+    return types, dogma
+
+
+@shared_task
+def types_page(page, ids):
+    c = esi_client_factory(version='dev')
+
+    type_ids = c.Universe.get_universe_types(page=page).result()
+    updates = [type_id for type_id in type_ids if type_id in ids]
+    type_ids = [type_id for type_id in type_ids if type_id not in ids]
+
+    if len(updates) > 0:
+        update_types.delay(updates)
+
+    types, dogma = __get_types_and_dogma_esi(type_ids)
     Type.objects.bulk_create(types, batch_size=500)
 
     attrs = []
@@ -146,4 +162,35 @@ def types_page(page):
 
     DogmaAttribute.objects.bulk_create(attrs, batch_size=500)
     DogmaEffect.objects.bulk_create(effects, batch_size=500)
+
+
+@shared_task
+def update_types(updates):
+    types, dogma = __get_types_and_dogma_esi(updates)
+    Type.objects.bulk_update(types, ['name', 'description', 'group_id', 'published',
+                                     'mass', 'capacity', 'volume', 'packaged_volume',
+                                     'portion_size', 'radius', 'graphic_id', 'icon_id',
+                                     'market_group_id'], batch_size=500)
+
+    attrs = []
+    effects = []
+    for type_id, dogma in dogma.items():
+        if dogma['effects'] is not None:
+            DogmaEffect.objects.filter(type_model__pk=type_id).delete()
+            for effect in dogma['effects']:
+                effect['type_model_id'] = type_id
+                effects.append(DogmaEffect(**effect))
+
+        if dogma['attributes'] is not None:
+            DogmaAttribute.objects.filter(type_model__pk=type_id).delete()
+            for attribute in dogma['attributes']:
+                attribute['type_model_id'] = type_id
+                attrs.append(DogmaAttribute(**attribute))
+
+    DogmaAttribute.objects.bulk_create(attrs, batch_size=500)
+    DogmaEffect.objects.bulk_create(effects, batch_size=500)
+
+
+
+
 
