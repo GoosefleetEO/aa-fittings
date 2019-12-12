@@ -3,6 +3,29 @@ from model_utils import Choices
 from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager
 
 
+# Type Model
+class Type(models.Model):
+    name = models.CharField(max_length=500)
+    type_id = models.BigIntegerField(primary_key=True)
+    group_id = models.IntegerField()
+    published = models.BooleanField(default=False)
+    mass = models.FloatField(null=True)
+    capacity = models.FloatField(null=True)
+    description = models.CharField(max_length=5000, null=False)  # Not sure of the actual max.
+    volume = models.FloatField(null=True)
+    packaged_volume = models.FloatField(null=True)
+    portion_size = models.IntegerField(null=True)
+    radius = models.FloatField(null=True)
+    graphic_id = models.IntegerField(null=True)
+    icon_id = models.IntegerField(null=True)
+    market_group_id = models.IntegerField(null=True)
+
+    objects = TypeManager()
+
+    class Meta:
+        default_permissions = ()
+
+
 # Dogma Attribute
 class DogmaAttribute(models.Model):
     # 12 - Low Slots | 13 - Med Slots | 14 - High Slots
@@ -10,6 +33,7 @@ class DogmaAttribute(models.Model):
     # 182 | 183 | 184 --- Req Skill 1/2/3
     # 277 - Req. Skill 1 Lvl | 278 | 279 -- Req Skill 1/2 Lvl
     # 1374 - HiSlotModifier | 1375 - MedSlotModifier | 1376 - RigSlotModifier
+    type_model = models.ForeignKey(Type, on_delete=models.DO_NOTHING, related_name='dogma_attributes')
     attribute_id = models.IntegerField()
     value = models.FloatField()
 
@@ -23,35 +47,11 @@ class DogmaAttribute(models.Model):
 class DogmaEffect(models.Model):
     # 11 - Low Power | 12 - High Power | 13 - Med Power
     # 2663 - Rig Slot | 3772 - Subsystem | 6306 - Service Slot
+    type_model = models.ForeignKey(Type, on_delete=models.DO_NOTHING, related_name='dogma_effects')
     effect_id = models.IntegerField()
     is_default = models.BooleanField()
 
     objects = DogmaEffectManager()
-
-    class Meta:
-        default_permissions = ()
-
-
-# Type Model
-class Type(models.Model):
-    name = models.CharField(max_length=500)
-    type_id = models.BigIntegerField(primary_key=True)
-    group_id = models.IntegerField()
-    published = models.BooleanField(default=False)
-    dogma_attributes = models.ManyToManyField(DogmaAttribute, related_name='types')
-    dogma_effects = models.ManyToManyField(DogmaEffect, related_name='types')
-    mass = models.FloatField(null=True)
-    capacity = models.FloatField(null=True)
-    description = models.CharField(max_length=5000, null=False)  # Not sure of the actual max.
-    volume = models.FloatField(null=True)
-    packaged_volume = models.FloatField(null=True)
-    portion_size = models.IntegerField(null=True)
-    radius = models.FloatField(null=True)
-    graphic_id = models.IntegerField(null=True)
-    icon_id = models.IntegerField(null=True)
-    market_group_id = models.IntegerField(null=True)
-
-    objects = TypeManager()
 
     class Meta:
         default_permissions = ()
