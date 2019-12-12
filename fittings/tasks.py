@@ -1,4 +1,5 @@
-from .models import Fitting, FittingItem, Type
+from .models import Fitting, FittingItem, Type, DogmaEffect, DogmaAttribute
+from esi.clients import esi_client_factory
 from celery import shared_task
 
 
@@ -91,3 +92,60 @@ def create_fit(eft_text, description=None):
 
     for item in parsed_eft['cargo_drones']:
         create_fitting_item(fit, item)
+
+
+@shared_task
+def populate_types():
+    # Get all the type IDs.
+    c = esi_client_factory(version='latest')
+
+    operation = c.Universe.get_universe_types()
+    operation.also_return_response = True
+    print("Getting page 1")
+    _, response = operation.result()
+    pages = int(response.headers['x-pages'])
+
+    for page in range(1, pages + 1):
+        print('Dispatching task for page {}'.format(page))
+        types_page.delay(page)
+
+
+@shared_task
+def types_page(page):
+    c = esi_client_factory(version='latest')
+
+    type_ids = c.Universe.get_universe_types(page=page).result()
+
+    dogma = {}
+    types = []
+    for type_id in type_ids:
+        try:
+            type_result = c.Universe.get_universe_types_type_id(type_id=type_id).result()
+            if type_result.get('published') is False:
+                # Unpublished items are unlikely to be in fits
+                continue
+            attributes = type_result.pop('dogma_attributes')
+            effects = type_result.pop('dogma_effects')
+
+            types.append(Type(**type_result))
+            dogma[type_id] = {'effects': effects, 'attributes': attributes}
+        except:
+            pass
+    Type.objects.bulk_create(types, batch_size=500)
+
+    attrs = []
+    effects = []
+    for type_id, dogma in dogma.items():
+        if dogma['effects'] is not None:
+            for effect in dogma['effects']:
+                effect['type_model_id'] = type_id
+                effects.append(DogmaEffect(**effect))
+
+        if dogma['attributes'] is not None:
+            for attribute in dogma['attributes']:
+                attribute['type_model_id'] = type_id
+                attrs.append(DogmaAttribute(**attribute))
+
+    DogmaAttribute.objects.bulk_create(attrs, batch_size=500)
+    DogmaEffect.objects.bulk_create(effects, batch_size=500)
+
