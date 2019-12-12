@@ -12,9 +12,15 @@ class EftParser:
         cargo_drone = []
         ship_type = ''
         fit_name = ''
-        counter = 0     # Slot flag number
+        counter = 0  # Slot flag number
+        last_line = ''
+        end_fit = False
 
         for line in self.eft_lines:
+            if last_line == '' and line == '':
+                end_fit = True
+
+            last_line = line
             if line == '':
                 counter = 0
                 continue
@@ -37,6 +43,8 @@ class EftParser:
                     if 'x' in quantity and quantity[1:].isdigit():
                         item_name = line.strip(quantity).strip()
                         cargo_drone.append({'name': item_name, 'quantity': int(quantity.strip('x'))})
+                    elif end_fit is True:
+                        cargo_drone.append({'name': line.strip(), 'quantity': 1})
                     else:
                         modules.append({'name': line.strip(), 'charge': '', 'count': counter})
             counter += 1
