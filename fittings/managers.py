@@ -1,6 +1,5 @@
 from django.db import models
 from esi.clients import esi_client_factory
-import pysnooper
 
 
 class TypeManager(models.Manager):
@@ -34,27 +33,13 @@ class TypeManager(models.Manager):
 
 class DogmaAttributeManager(models.Manager):
     def bulk_attributes(self, attributes, type_pk):
-        from .models import Type
-        through_model = Type.dogma_attributes.through
-
-        tms = []
         for attribute in attributes:
+            attribute['type_model_id'] = type_pk
             att = self.create(**attribute)
-            tm = through_model(type_id=type_pk, dogmaattribute_id=att.pk)
-            tms.append(tm)
-
-        through_model.objects.bulk_create(tms)
 
 
 class DogmaEffectManager(models.Manager):
     def bulk_effects(self, effects, type_pk):
-        from .models import Type
-        through_model = Type.dogma_effects.through
-
-        tms = []
         for effect in effects:
+            effect['type_model_id'] = type_pk
             eff = self.create(**effect)
-            tm = through_model(type_id=type_pk, dogmaeffect_id=eff.pk)
-            tms.append(tm)
-
-        through_model.objects.bulk_create(tms)
