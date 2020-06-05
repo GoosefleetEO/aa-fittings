@@ -43,6 +43,7 @@ def _build_slots(fit):
 
     return slots
 
+
 @permission_required('fittings.access_fittings')
 @login_required()
 def dashboard(request):
@@ -71,10 +72,10 @@ def add_fit(request):
     ctx = {'msg': msg}
     return render(request, 'fittings/add_fit.html', context=ctx)
 
+
 @permission_required('fittings.manage')
 @login_required()
 def edit_fit(request, fit_id):
-    ctx = {}
     try:
         fit = Fitting.objects.get(pk=fit_id)
         
@@ -91,8 +92,7 @@ def edit_fit(request, fit_id):
         # Add success message, with note that it may take some time to see the fit on the dashboard.
         return redirect('fittings:view_fit', fit_id)
 
-    ctx = {'msg': msg}
-    ctx['fit'] = fit
+    ctx = {'msg': msg, 'fit': fit}
     return render(request, 'fittings/edit_fit.html', context=ctx)
 
 
@@ -187,7 +187,7 @@ def edit_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExits:
-        msg = ('msg', 'Doctrine not found!')
+        msg = ('warning', 'Doctrine not found!')
 
         return redirect('fittings:dashboard')
 
