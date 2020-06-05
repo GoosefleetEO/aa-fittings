@@ -211,7 +211,7 @@ class UniCategory(models.Model):
                                        help_text="All fittings in a doctrine will be treated as if they are in the "
                                                  "doctrine's category.")
 
-    groups = models.ManyToManyField(AuthGroup, blank=True, related_name="access_restricted_category",
+    groups = models.ManyToManyField(Group, blank=True, related_name="access_restricted_category",
                                     help_text="Groups listed here will be able to access fits and doctrines"
                                               " listed under this category. If a category has no groups listed"
                                               " then it is considered an public category, accessible to anyone"
