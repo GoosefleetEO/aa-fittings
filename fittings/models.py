@@ -3,7 +3,7 @@ from model_utils import Choices
 from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
 from django.db.models import Subquery, OuterRef, CharField
 
-# TODO: Investigate effect of changing group_id to FK from integer field.
+from allianceauth.groupmanagement.models import AuthGroup
 
 
 # Category Model
