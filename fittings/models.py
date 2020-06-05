@@ -117,7 +117,7 @@ class Fitting(models.Model):
             {'key': 'HiSlot', 'range': 8},
             {'key': 'RigSlot', 'range': 3},
             {'key': 'SubSystemSlot', 'range': 4},
-            {'key': 'ServiceSlot', 'range': 8}
+            {'key': 'ServiceSlot', 'range': 8}  # This is likely much higher than the actual max.
         ]
         
         for item in items:
@@ -197,3 +197,23 @@ class Doctrine(models.Model):
         default_permissions = (())
         permissions = (("manage", "Can manage doctrines and fits."),)
 
+
+# Unified Category
+class UniCategory(models.Model):
+    name = models.CharField(max_length=255, null=False)
+    color = models.TextField(max_length=20)  # Tag Color
+
+    fittings = models.ManyToManyField(Fitting, related_name="category")
+    doctrines = models.ManyToManyField(Doctrine, related_name="category")
+
+    groups = models.ManyToManyField(AuthGroup, related_name="access_restricted_category",
+                                    help_text="Groups listed here will be able to access fits and doctrines"
+                                              " listed under this category. If a category has no groups listed"
+                                              " then it is considered an public category, accessible to anyone"
+                                              " with permission to access permissions to the fittings module.")
+
+    def __str__(self):
+        return f"UniCategory: {self.name}"
+
+    class Meta:
+        default_permissions = (())
