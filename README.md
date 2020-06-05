@@ -21,8 +21,12 @@ Fittings offers the following features:
 
 * Support for inputting fittings using the EFT format. 
   * Support for pulling fits from ESI *Coming Soon*
+* Support for exporting fits as EFT format.
 * Support for saving fits to EVE via ESI.
 * All fits can be copied to the clipboard for ***Buy All***.
+* Categorization of your fittings and doctrines to keep things organized
+and easy to manage.
+  * Access to categories can be restricted to specific groups.
 
 ## Screenshots
 
