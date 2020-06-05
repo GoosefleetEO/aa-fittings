@@ -101,7 +101,8 @@ class Fitting(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.ship_type.type_name, self.name)
-        
+
+    @property
     def eft(self):
         types = Type.objects.filter(type_id=OuterRef('type_id'))
         items = FittingItem.objects.filter(fit=self).annotate(item_name=Subquery(types.values('type_name')))
