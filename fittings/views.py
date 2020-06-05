@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .tasks import create_fit, update_fit
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count
+from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count, Q
 from .models import Doctrine, Fitting, Type, FittingItem, DogmaEffect
 from esi.decorators import token_required
 from .providers import esi
@@ -50,7 +50,10 @@ def dashboard(request):
     msg = None
 
     doc_dict = {}
-    docs = Doctrine.objects.all()
+    docs = Doctrine.objects.filter(
+        Q(category__groups__in=request.user.groups.all()) |
+        Q(category__isnull=True) |
+        Q(category__groups__isnull=True))
     for doc in docs:
         doc_dict[doc.pk] = doc.fittings.all().values('ship_type', 'ship_type_type_id').distinct()
     ctx = {'msg': msg, 'docs': docs, 'doc_dict': doc_dict}
@@ -175,7 +178,13 @@ def view_doctrine(request, doctrine_id):
 def view_all_fits(request):
     ctx = {}
 
-    fits = Fitting.objects.all()
+    fits = Fitting.objects.filter(
+        Q(Q(category__groups__in=request.user.groups.all()) |
+          Q(category__isnull=True) |
+          Q(category__groups__isnull=True)) &
+        Q(Q(doctrines__category__groups__isnull=True) |
+          Q(doctrines__category__groups__in=request.user.groups.all()) |
+          Q(doctrines__category__isnull=True)))
     ctx['fits'] = fits
     return render(request, 'fittings/view_all_fits.html', context=ctx)
 

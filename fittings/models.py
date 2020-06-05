@@ -3,7 +3,7 @@ from model_utils import Choices
 from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
 from django.db.models import Subquery, OuterRef
 
-from allianceauth.groupmanagement.models import AuthGroup
+from django.contrib.auth.models import Group
 
 
 # Category Model
@@ -192,6 +192,9 @@ class Doctrine(models.Model):
     description = models.CharField(max_length=1000)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return f"{self.name}"
 
     class Meta:
         default_permissions = (())
