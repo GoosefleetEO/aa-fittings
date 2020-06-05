@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
-from django.db.models import Subquery, OuterRef, CharField
+from django.db.models import Subquery, OuterRef
 
 from allianceauth.groupmanagement.models import AuthGroup
 
@@ -201,12 +201,17 @@ class Doctrine(models.Model):
 # Unified Category
 class UniCategory(models.Model):
     name = models.CharField(max_length=255, null=False)
-    color = models.TextField(max_length=20)  # Tag Color
+    color = models.TextField(max_length=20, default="#FFFFFF")  # Tag Color
 
-    fittings = models.ManyToManyField(Fitting, related_name="category")
-    doctrines = models.ManyToManyField(Doctrine, related_name="category")
+    fittings = models.ManyToManyField(Fitting, blank=True, related_name="category",
+                                      help_text="Fittings only need to be tagged with a category if they are "
+                                                "not included in any doctrines, or if they need to be labled "
+                                                "in addition to their doctrine's category.")
+    doctrines = models.ManyToManyField(Doctrine, blank=True, related_name="category",
+                                       help_text="All fittings in a doctrine will be treated as if they are in the "
+                                                 "doctrine's category.")
 
-    groups = models.ManyToManyField(AuthGroup, related_name="access_restricted_category",
+    groups = models.ManyToManyField(AuthGroup, blank=True, related_name="access_restricted_category",
                                     help_text="Groups listed here will be able to access fits and doctrines"
                                               " listed under this category. If a category has no groups listed"
                                               " then it is considered an public category, accessible to anyone"
@@ -216,4 +221,6 @@ class UniCategory(models.Model):
         return f"UniCategory: {self.name}"
 
     class Meta:
+        verbose_name = "Unified Category"
+        verbose_name_plural = "Unified Categories"
         default_permissions = (())
