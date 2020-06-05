@@ -109,15 +109,15 @@ class Fitting(models.Model):
 
         eft = '[' + self.ship_type.type_name + ', ' + self.name + ']\n\n'
 
-        temp = { 'Cargo': [], 'FighterBay': [], 'DroneBay': []}
+        temp = {'Cargo': [], 'FighterBay': [], 'DroneBay': []}
         
         slots = [
-            { 'key': 'LoSlot', 'range': 8 },
-            { 'key': 'MedSlot', 'range': 8 },
-            { 'key': 'HiSlot', 'range': 8 },
-            { 'key': 'RigSlot', 'range': 3 },
-            { 'key': 'SubSystemSlot', 'range': 4 },
-            { 'key': 'ServiceSlot', 'range': 8 }
+            {'key': 'LoSlot', 'range': 8},
+            {'key': 'MedSlot', 'range': 8},
+            {'key': 'HiSlot', 'range': 8},
+            {'key': 'RigSlot', 'range': 3},
+            {'key': 'SubSystemSlot', 'range': 4},
+            {'key': 'ServiceSlot', 'range': 8}
         ]
         
         for item in items:
@@ -131,15 +131,14 @@ class Fitting(models.Model):
                 temp[item.flag] = item.item_name
 
         for slot in slots:
-            isEmpty = True
+            is_empty = True
             for i in range(0, slot['range']):
                 key = slot['key'] + str(i)
                 if key in temp:
                     eft += temp[key] + '\n'
-                    isEmpty = False
-            if isEmpty == False:
+                    is_empty = False
+            if not is_empty:
                 eft += '\n'
-
 
         slots = [
             'FighterBay',
