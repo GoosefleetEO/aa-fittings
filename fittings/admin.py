@@ -18,7 +18,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
         qs = qs.annotate(
             fittings_count=Count('fittings'),
-            doctrine_count=Count('doctrine'),
+            doctrine_count=Count('doctrines'),
             groups_count=Count('groups'),
         )
 
