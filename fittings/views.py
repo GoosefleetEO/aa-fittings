@@ -54,16 +54,16 @@ def _check_fit_access(user, fit_id: int) -> bool:
     if user.has_perm('fittings.manage'):
         logger.debug(f"User {user.pk} has manage permissions, returning True.")
         return True
+    groups = user.groups.all()
     fits = Fitting.objects.filter(
-        Q(Q(category__groups__in=user.groups.all()) |
+        Q(Q(category__groups__in=groups) |
           Q(category__isnull=True) |
           Q(category__groups__isnull=True)) &
         Q(Q(doctrines__category__groups__isnull=True) |
-          Q(doctrines__category__groups__in=user.groups.all()) |
-          Q(doctrines__category__isnull=True))).values_list('pk', flat=True)
-    logger.debug(fits)
-    logger.debug(f"returning {fit_id in fits}")
-    return fit_id in fits
+          Q(doctrines__category__groups__in=groups) |
+          Q(doctrines__category__isnull=True))).filter(pk=fit_id).exists()
+    logger.debug(f"returning {fits}")
+    return fits
 
 
 @permission_required('fittings.access_fittings')
@@ -211,12 +211,13 @@ def view_all_fits(request):
     if request.user.has_perm('fittings.manage'):
         fits = Fitting.objects.all()
     else:
+        groups = request.user.groups.all()
         fits = Fitting.objects.filter(
-            Q(Q(category__groups__in=request.user.groups.all()) |
+            Q(Q(category__groups__in=groups) |
               Q(category__isnull=True) |
               Q(category__groups__isnull=True)) &
             Q(Q(doctrines__category__groups__isnull=True) |
-              Q(doctrines__category__groups__in=request.user.groups.all()) |
+              Q(doctrines__category__groups__in=groups) |
               Q(doctrines__category__isnull=True)))
     ctx['fits'] = fits
     return render(request, 'fittings/view_all_fits.html', context=ctx)
