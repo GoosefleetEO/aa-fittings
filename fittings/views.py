@@ -87,6 +87,7 @@ def dashboard(request):
 @permission_required('fittings.manage')
 @login_required()
 def add_fit(request):
+    ctx = {}
     if request.method == 'POST':
         etf_text = request.POST['eft']
         description = request.POST['description']
@@ -209,10 +210,10 @@ def view_all_fits(request):
     ctx = {}
 
     if request.user.has_perm('fittings.manage'):
-        fits = Fitting.objects.all()
+        fits = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type').all()
     else:
         groups = request.user.groups.all()
-        fits = Fitting.objects.filter(
+        fits = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
             Q(Q(category__groups__in=groups) |
               Q(category__isnull=True) |
               Q(category__groups__isnull=True)) &
