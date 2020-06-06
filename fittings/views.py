@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .tasks import create_fit, update_fit
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count, Q
 from .models import Doctrine, Fitting, Type, FittingItem, DogmaEffect
@@ -48,7 +49,11 @@ def _build_slots(fit):
 
 
 def _check_fit_access(user, fit_id: int) -> bool:
+    fit_id = int(fit_id)
     logger.debug(f"Checking user {user.pk} access to fit {fit_id}")
+    if user.has_perm('fittings.manage'):
+        logger.debug(f"User {user.pk} has manage permissions, returning True.")
+        return True
     fits = Fitting.objects.filter(
         Q(Q(category__groups__in=user.groups.all()) |
           Q(category__isnull=True) |
@@ -64,23 +69,24 @@ def _check_fit_access(user, fit_id: int) -> bool:
 @permission_required('fittings.access_fittings')
 @login_required()
 def dashboard(request):
-    msg = None
 
     doc_dict = {}
-    docs = Doctrine.objects.filter(
-        Q(category__groups__in=request.user.groups.all()) |
-        Q(category__isnull=True) |
-        Q(category__groups__isnull=True))
+    if request.user.has_perm('fittings.manage'):
+        docs = Doctrine.objects.all()
+    else:
+        docs = Doctrine.objects.filter(
+            Q(category__groups__in=request.user.groups.all()) |
+            Q(category__isnull=True) |
+            Q(category__groups__isnull=True))
     for doc in docs:
         doc_dict[doc.pk] = doc.fittings.all().values('ship_type', 'ship_type_type_id').distinct()
-    ctx = {'msg': msg, 'docs': docs, 'doc_dict': doc_dict}
+    ctx = {'docs': docs, 'doc_dict': doc_dict}
     return render(request, 'fittings/dashboard.html', context=ctx)
 
 
 @permission_required('fittings.manage')
 @login_required()
 def add_fit(request):
-    msg = None
     if request.method == 'POST':
         etf_text = request.POST['eft']
         description = request.POST['description']
@@ -89,7 +95,6 @@ def add_fit(request):
         # Add success message, with note that it may take some time to see the fit on the dashboard.
         return redirect('fittings:dashboard')
 
-    ctx = {'msg': msg}
     return render(request, 'fittings/add_fit.html', context=ctx)
 
 
@@ -100,10 +105,10 @@ def edit_fit(request, fit_id):
         fit = Fitting.objects.get(pk=fit_id)
         
     except Fitting.DoesNotExist:
-        msg = ('warning', 'Fit not found!')
+        messages.warning(request, 'Fit not found!')
 
         return redirect('fittings:dashboard')
-    msg = None
+
     if request.method == 'POST':
         etf_text = request.POST['eft']
         description = request.POST['description']
@@ -112,7 +117,7 @@ def edit_fit(request, fit_id):
         # Add success message, with note that it may take some time to see the fit on the dashboard.
         return redirect('fittings:view_fit', fit_id)
 
-    ctx = {'msg': msg, 'fit': fit}
+    ctx = {'fit': fit}
     return render(request, 'fittings/edit_fit.html', context=ctx)
 
 
@@ -123,15 +128,15 @@ def view_fit(request, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
     except Fitting.DoesNotExist:
-        msg = ('warning', 'Fit not found!')
+        messages.warning(request, 'Fit not found!')
 
         return redirect('fittings:dashboard')
 
     # Ensure that the character should have access to the fitting.
     access = _check_fit_access(request.user, fit_id)
-    logger.debug(f"User id:{request.user.pk} attempting to access fit {fit_id}:: Access {access}")
+
     if not access:
-        msg = ('warning', 'You do not have access to that fit.')
+        messages.warning(request, 'You do not have access to that fit.')
 
         return redirect('fittings:dashboard')
 
@@ -189,7 +194,7 @@ def view_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
-        msg = ('warning', 'Doctrine not found!')
+        messages.warning(request, 'Doctrine not found!')
 
         return redirect('fittings:dashboard')
 
@@ -203,13 +208,16 @@ def view_doctrine(request, doctrine_id):
 def view_all_fits(request):
     ctx = {}
 
-    fits = Fitting.objects.filter(
-        Q(Q(category__groups__in=request.user.groups.all()) |
-          Q(category__isnull=True) |
-          Q(category__groups__isnull=True)) &
-        Q(Q(doctrines__category__groups__isnull=True) |
-          Q(doctrines__category__groups__in=request.user.groups.all()) |
-          Q(doctrines__category__isnull=True)))
+    if request.user.has_perm('fittings.manage'):
+        fits = Fitting.objects.all()
+    else:
+        fits = Fitting.objects.filter(
+            Q(Q(category__groups__in=request.user.groups.all()) |
+              Q(category__isnull=True) |
+              Q(category__groups__isnull=True)) &
+            Q(Q(doctrines__category__groups__isnull=True) |
+              Q(doctrines__category__groups__in=request.user.groups.all()) |
+              Q(doctrines__category__isnull=True)))
     ctx['fits'] = fits
     return render(request, 'fittings/view_all_fits.html', context=ctx)
 
@@ -221,7 +229,7 @@ def edit_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExits:
-        msg = ('warning', 'Doctrine not found!')
+        messages.warning(request, 'Doctrine not found!')
 
         return redirect('fittings:dashboard')
 
@@ -257,7 +265,7 @@ def delete_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
-        msg = ('warning', 'Doctrine not found!')
+        messages.warning(request, 'Doctrine not found!')
 
         return redirect('fittings:dashboard')
 
@@ -272,7 +280,7 @@ def delete_fit(request, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
     except Doctrine.DoesNotExist:
-        msg = ('warning', 'Fit not found!')
+        messages.warning(request, 'Fit not found!')
 
         return redirect('fittings:dashboard')
 
@@ -288,9 +296,15 @@ def save_fit(request, token, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
     except Fitting.DoesNotExist:
-        msg = ('warning', 'Fit not found!')
+        messages.warning(request, 'Fit not found!')
 
         return redirect('fitting:dashboard')
+
+    access = _check_fit_access(request.user, fit_id)
+    if not access:
+        messages.warning(request, 'You do not have access to that fit.')
+
+        return redirect('fittings:dashboard')
 
     # Build POST payload
     fit_dict = {
