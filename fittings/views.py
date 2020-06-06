@@ -5,6 +5,9 @@ from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F
 from .models import Doctrine, Fitting, Type, FittingItem, DogmaEffect
 from esi.decorators import token_required
 from .providers import esi
+from allianceauth.services.hooks import get_extension_logger
+
+logger = get_extension_logger(__name__)
 
 
 # Create your views here.
@@ -42,6 +45,20 @@ def _build_slots(fit):
             slots['rig'] = int(attribute.value)
 
     return slots
+
+
+def _check_fit_access(user, fit_id: int) -> bool:
+    logger.debug(f"Checking user {user.pk} access to fit {fit_id}")
+    fits = Fitting.objects.filter(
+        Q(Q(category__groups__in=user.groups.all()) |
+          Q(category__isnull=True) |
+          Q(category__groups__isnull=True)) &
+        Q(Q(doctrines__category__groups__isnull=True) |
+          Q(doctrines__category__groups__in=user.groups.all()) |
+          Q(doctrines__category__isnull=True))).values_list('pk', flat=True)
+    logger.debug(fits)
+    logger.debug(f"returning {fit_id in fits}")
+    return fit_id in fits
 
 
 @permission_required('fittings.access_fittings')
@@ -107,6 +124,14 @@ def view_fit(request, fit_id):
         fit = Fitting.objects.get(pk=fit_id)
     except Fitting.DoesNotExist:
         msg = ('warning', 'Fit not found!')
+
+        return redirect('fittings:dashboard')
+
+    # Ensure that the character should have access to the fitting.
+    access = _check_fit_access(request.user, fit_id)
+    logger.debug(f"User id:{request.user.pk} attempting to access fit {fit_id}:: Access {access}")
+    if not access:
+        msg = ('warning', 'You do not have access to that fit.')
 
         return redirect('fittings:dashboard')
 
