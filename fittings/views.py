@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .tasks import create_fit, update_fit
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count, Q
+from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count, Q, Prefetch
 from .models import Doctrine, Fitting, Type, FittingItem, DogmaEffect
 from esi.decorators import token_required
 from .providers import esi
@@ -69,17 +69,22 @@ def _check_fit_access(user, fit_id: int) -> bool:
 @permission_required('fittings.access_fittings')
 @login_required()
 def dashboard(request):
-
     doc_dict = {}
     if request.user.has_perm('fittings.manage'):
-        docs = Doctrine.objects.all()
+        docs = Doctrine.objects.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type'))).all()
     else:
         docs = Doctrine.objects.filter(
             Q(category__groups__in=request.user.groups.all()) |
             Q(category__isnull=True) |
             Q(category__groups__isnull=True))
     for doc in docs:
-        doc_dict[doc.pk] = doc.fittings.all().values('ship_type', 'ship_type_type_id').distinct()
+        fits = []
+        ids = []
+        for fit in doc.fittings.all():
+            if fit.ship_type_type_id not in ids:
+                fits.append(fit)
+                ids.append(fit.ship_type_type_id)
+        doc_dict[doc.pk] = fits
     ctx = {'docs': docs, 'doc_dict': doc_dict}
     return render(request, 'fittings/dashboard.html', context=ctx)
 
