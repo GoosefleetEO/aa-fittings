@@ -31,6 +31,7 @@
                 <table class="table table-hover dataTable" id="fitTable">
                     <thead>
                         <th>Name</th>
+                        <th>Categories</th>
                         <th>Description</th>
                         <th>Ship Type</th>
                     </thead>
@@ -45,6 +46,11 @@
                             {% for fit in fits %}
                                 <tr>
                                     <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
+                                    <td>
+                                        {% for cat in cats|get_item:fit.pk %}
+                                        <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                                        {% endfor %}
+                                    </td>
                                     <td> {{ fit.description }} </td>
                                     <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }} </td>
                                 </tr>

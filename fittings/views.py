@@ -71,12 +71,15 @@ def _check_fit_access(user, fit_id: int) -> bool:
 def dashboard(request):
     doc_dict = {}
     if request.user.has_perm('fittings.manage'):
-        docs = Doctrine.objects.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type'))).all()
+        docs = Doctrine.objects.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .prefetch_related('category').all()
     else:
-        docs = Doctrine.objects.filter(
-            Q(category__groups__in=request.user.groups.all()) |
-            Q(category__isnull=True) |
-            Q(category__groups__isnull=True))
+        docs = Doctrine.objects.prefetch_related('category')\
+            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .filter(
+                Q(category__groups__in=request.user.groups.all()) |
+                Q(category__isnull=True) |
+                Q(category__groups__isnull=True))
     for doc in docs:
         fits = []
         ids = []
@@ -226,6 +229,21 @@ def view_all_fits(request):
               Q(doctrines__category__groups__in=groups) |
               Q(doctrines__category__isnull=True)))
     ctx['fits'] = fits
+    categories = dict()
+    for fit in fits:
+        cats = []
+        ids = []
+        for cat in fit.category.all():
+            if cat.pk not in ids:
+                cats.append(cat)
+                ids.append(cat.pk)
+        for doc in fit.doctrines.all():
+            for cat in doc.category.all():
+                if cat.pk not in ids:
+                    cats.append(cat)
+                    ids.append(cat.pk)
+        categories[fit.pk] = cats
+    ctx['cats'] = categories
     return render(request, 'fittings/view_all_fits.html', context=ctx)
 
 
