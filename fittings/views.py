@@ -201,14 +201,37 @@ def add_doctrine(request):
 def view_doctrine(request, doctrine_id):
     ctx = {}
     try:
-        doctrine = Doctrine.objects.get(pk=doctrine_id)
+        doctrine = Doctrine.objects.prefetch_related('category')\
+            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .prefetch_related('fittings__category')\
+            .prefetch_related('fittings__doctrines')\
+            .prefetch_related('fittings__doctrines__category').get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
         messages.warning(request, 'Doctrine not found!')
 
         return redirect('fittings:dashboard')
 
     ctx['doctrine'] = doctrine
+    ctx['d_cats'] = doctrine.category.all()
     ctx['fits'] = doctrine.fittings.all()
+
+    # Build fit category list
+    categories = dict()
+    for fit in ctx['fits']:
+        cats = []
+        ids = []
+        for cat in fit.category.all():
+            if cat.pk not in ids:
+                cats.append(cat)
+                ids.append(cat.pk)
+        for doc in fit.doctrines.all():
+            for cat in doc.category.all():
+                if cat.pk not in ids:
+                    cats.append(cat)
+                    ids.append(cat.pk)
+        categories[fit.pk] = cats
+    ctx['f_cats'] = categories
+
     return render(request, 'fittings/view_doctrine.html', context=ctx)
 
 
