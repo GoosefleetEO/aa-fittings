@@ -135,7 +135,7 @@ def edit_fit(request, fit_id):
 def view_fit(request, fit_id):
     ctx = {}
     try:
-        fit = Fitting.objects.get(pk=fit_id)
+        fit = Fitting.objects.prefetch_related('category', 'doctrines', 'doctrines__category').get(pk=fit_id)
     except Fitting.DoesNotExist:
         messages.warning(request, 'Fit not found!')
 
@@ -168,6 +168,22 @@ def view_fit(request, fit_id):
     ctx['slots'] = _build_slots(fit)
     ctx['fit'] = fit
     ctx['fitting'] = fittings
+
+    # Build Doctrine Category Dict
+    cats = []
+    ids = []
+    for doc in ctx['doctrines']:
+        for cat in doc.category.all():
+            if cat.pk not in ids:
+                cats.append(cat)
+                ids.append(cat.pk)
+    for cat in fit.category.all():
+        if cat.pk not in ids:
+            cats.append(cat)
+            ids.append(cat.pk)
+    del ids
+    ctx['cats'] = cats
+
     return render(request, 'fittings/view_fit.html', context=ctx)
 
 
@@ -230,6 +246,7 @@ def view_doctrine(request, doctrine_id):
                     cats.append(cat)
                     ids.append(cat.pk)
         categories[fit.pk] = cats
+    del ids
     ctx['f_cats'] = categories
 
     return render(request, 'fittings/view_doctrine.html', context=ctx)

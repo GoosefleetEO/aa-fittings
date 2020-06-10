@@ -148,8 +148,11 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <div class="col-sm-12 col-md-12 text-center">
+                        <div class="col-sm-12 col-md-12 text-center" style="margin-bottom: 5px;">
                             <h3>{{fit.name}}</h3>
+                            {% for cat in cats %}
+                                <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                            {% endfor %}
                         </div>
                         <div class="col-sm-12 col-md-12">
                             <div class="panel panel-warning">
