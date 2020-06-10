@@ -1,4 +1,9 @@
 # Fittings
+![pypi latest version](https://img.shields.io/pypi/v/fittings?label=latest)
+![python versions](https://img.shields.io/pypi/pyversions/fittings)
+![django versions](https://img.shields.io/pypi/djversions/fittings?label=django)
+![license](https://img.shields.io/pypi/l/fittings?color=green)
+
 A simple fittings and doctrine management app for [allianceauth](https://gitlab.com/allianceauth/allianceauth).
 
 ## Contents
