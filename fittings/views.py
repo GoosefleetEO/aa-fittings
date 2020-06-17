@@ -1,11 +1,12 @@
 from allianceauth.services.hooks import get_extension_logger
 from django.contrib import messages
+from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Subquery, OuterRef, Count, Q, Prefetch
+from django.db.models import Subquery, OuterRef, Count, Q, Prefetch, F
 from django.shortcuts import render, redirect
 from esi.decorators import token_required
 
-from .models import Doctrine, Fitting, Type, FittingItem
+from .models import Doctrine, Fitting, Type, FittingItem, UniCategory
 from .providers import esi
 from .tasks import create_fit, update_fit
 
@@ -338,6 +339,23 @@ def delete_doctrine(request, doctrine_id):
     doctrine.delete()
 
     return redirect('fittings:dashboard')
+
+
+@permission_required('fittings.manage')
+@login_required()
+def view_all_categories(request):
+    ctx = {}
+    cats = UniCategory.objects\
+        .all()\
+        .annotate(groups_count=Count('groups', distinct=True))\
+        .annotate(doctrines_count=Count('doctrines', distinct=True))\
+        .annotate(fittings_count=Count('fittings', distinct=True))\
+        .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
+        .annotate(total_fits=F('fittings_count')+F('d_fittings_count'))
+    for cat in cats:
+        logger.debug(f'{cat.name}: Groups {cat.groups_count}')
+    ctx['cats'] = cats
+    return render(request, 'fittings/view_all_categories.html', context=ctx)
 
 
 @permission_required('fittings.manage')
