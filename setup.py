@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+
 from fittings import __version__
 
 with open("README.md", "r") as fh:

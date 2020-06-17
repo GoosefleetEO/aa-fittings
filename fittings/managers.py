@@ -1,6 +1,7 @@
-from django.db import models
-from .providers import esi
 from allianceauth.services.hooks import get_extension_logger
+from django.db import models
+
+from .providers import esi
 
 logger = get_extension_logger(__name__)
 

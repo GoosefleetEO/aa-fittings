@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from .tasks import create_fit, update_fit
+from allianceauth.services.hooks import get_extension_logger
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Subquery, OuterRef, Case, When, Value, CharField, F, Exists, Count, Q, Prefetch
-from .models import Doctrine, Fitting, Type, FittingItem, DogmaEffect
+from django.db.models import Subquery, OuterRef, Count, Q, Prefetch
+from django.shortcuts import render, redirect
 from esi.decorators import token_required
+
+from .models import Doctrine, Fitting, Type, FittingItem
 from .providers import esi
-from allianceauth.services.hooks import get_extension_logger
+from .tasks import create_fit, update_fit
 
 logger = get_extension_logger(__name__)
 

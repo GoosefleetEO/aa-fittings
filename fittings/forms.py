@@ -1,7 +1,7 @@
 from django.forms import ModelForm
-from django.forms.widgets import TextInput, NumberInput
+from django.forms.widgets import TextInput
+
 from .models import UniCategory
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 # Create your forms here.

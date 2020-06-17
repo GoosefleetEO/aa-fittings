@@ -1,9 +1,9 @@
-from django.db import models
-from model_utils import Choices
-from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
-from django.db.models import Subquery, OuterRef
-
 from django.contrib.auth.models import Group
+from django.db import models
+from django.db.models import Subquery, OuterRef
+from model_utils import Choices
+
+from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
 
 
 # Category Model

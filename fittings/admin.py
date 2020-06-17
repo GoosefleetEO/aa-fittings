@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.db.models import Count, F
-from .models import Fitting, UniCategory
+from django.db.models import Count
+
 from .forms import CategoryForm
+from .models import Fitting, UniCategory
 
 # Register your models here.
 admin.site.register(Fitting)
