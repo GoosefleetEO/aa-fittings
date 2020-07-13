@@ -360,6 +360,42 @@ def view_all_categories(request):
 
 @permission_required('fittings.manage')
 @login_required()
+def add_category(request):
+    ctx = {}
+    if request.method is 'POST':
+        name = request.POST['name']
+        color = request.POST['color']
+        fitSelect = [int(fit) for fit in request.POST.getlist('fitSelect')]
+        docSelect = [int(fit) for fit in request.POST.getlist('docSelect')]
+        groupSelect = [int(fit) for fit in request.POST.getlist('groupSelect')]
+
+        cat = UniCategory(name=name, color=color)
+        cat.save()
+        for fit in fitSelect:
+            cat.fittings.all(fit)
+        for doc in docSelect:
+            cat.doctrines.all(doc)
+        for group in groupSelect:
+            cat.groups.all(group)
+        return redirect('fittings:view_category', cat.pk)
+    fits = Fitting.objects.all()
+    docs = Doctrine.objects.all()
+    groups = Group.objects.all()
+
+    ctx = {'groups': groups, 'fits': fits, 'docs': docs}
+    return render(request, 'fittings/cat_form.html', ctx)
+
+
+def view_category(request, cat_id):
+    pass
+
+
+def edit_category(request, cat_id):
+    pass
+
+
+@permission_required('fittings.manage')
+@login_required()
 def delete_fit(request, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
