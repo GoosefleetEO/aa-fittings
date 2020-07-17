@@ -362,21 +362,22 @@ def view_all_categories(request):
 @login_required()
 def add_category(request):
     ctx = {}
-    if request.method is 'POST':
+    if request.method == 'POST':
+        logger.critical("POSTED")
         name = request.POST['name']
         color = request.POST['color']
         fitSelect = [int(fit) for fit in request.POST.getlist('fitSelect')]
-        docSelect = [int(fit) for fit in request.POST.getlist('docSelect')]
-        groupSelect = [int(fit) for fit in request.POST.getlist('groupSelect')]
+        docSelect = [int(doc) for doc in request.POST.getlist('docSelect')]
+        groupSelect = [int(grp) for grp in request.POST.getlist('groupSelect')]
 
         cat = UniCategory(name=name, color=color)
         cat.save()
         for fit in fitSelect:
-            cat.fittings.all(fit)
+            cat.fittings.add(fit)
         for doc in docSelect:
-            cat.doctrines.all(doc)
+            cat.doctrines.add(doc)
         for group in groupSelect:
-            cat.groups.all(group)
+            cat.groups.add(group)
         return redirect('fittings:view_category', cat.pk)
     fits = Fitting.objects.all()
     docs = Doctrine.objects.all()
@@ -387,7 +388,7 @@ def add_category(request):
 
 
 def view_category(request, cat_id):
-    pass
+    return redirect('fittings:dashboard')
 
 
 def edit_category(request, cat_id):

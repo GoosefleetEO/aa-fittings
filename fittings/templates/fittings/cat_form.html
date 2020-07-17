@@ -14,6 +14,7 @@
         .ms-container {
             width: 100% !important;
         }
+
         input[type="color"] {
             opacity: 0;
             display: block;
@@ -22,6 +23,8 @@
             width: 100%;
         }
     </style>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.css">
 
 {% endblock %}
 
@@ -59,7 +62,11 @@
                                     <div class="form-group">
                                         <label for="groupsSelect" style="margin-bottom: 0;">Select Groups</label>
                                         <span class="help-block" style="margin-top: 0; margin-bottom: 0; font-size: 10pt; font-style: italic;">Only selected groups will have access to fittings and doctrines in this category. If no groups are selected the category will be visible to all with fittings module access.</span>
-                                        <input class="form-control" id="groupsSelect" name="groupSelect" type="text" placeholder="placeholder" required/>
+                                        <select name="groupSelect" id="groupSelect" classs="form-control" multiple>
+                                            {% for group in groups %}
+                                            <option value="{{group.pk}}">{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -67,13 +74,21 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="fitSelect">Select Fits</label>
-                                        <input type="text" class="form-control" id="fitSelect" name="fitSelect" placeholder="placeholder" required/>
+                                        <select name="fitSelect" id="fitSelect" multiple>
+                                            {% for fit in fits %}
+                                            <option value="{{fit.pk}}">{{fit.name}}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="docSelect">Select Doctrines</label>
-                                        <input type="text" class="form-control" id="docSelect" name="docSelect" placeholder="placeholder" required />
+                                        <select name="docSelect" id="docSelect" multiple>
+                                            {% for doc in docs %}
+                                            <option value="{{doc.pk}}">{{doc.name}}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +103,9 @@
 {% endblock %}
 
 {% block extra_javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.js"></script>
 {% endblock %}
+
 
 {% block extra_script %}
 var color_picker = document.getElementById("color");
@@ -97,5 +114,13 @@ color_picker.onchange = function() {
 	color_picker_wrapper.style.backgroundColor = color_picker.value;
 }
 color_picker_wrapper.style.backgroundColor = color_picker.value;
+
+new SlimSelect({
+    select: "#groupSelect",
+    hideSelectedOption: true
+});
+
+new SlimSelect({select: "#fitSelect", hideSelectedOption: true});
+new SlimSelect({select: "#docSelect", hideSelectedOption: true});
 
 {% endblock %}
