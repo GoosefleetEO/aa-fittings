@@ -78,7 +78,7 @@
                                             <td> <a href="{% url 'fittings:view_doctrine' doc.pk %}">{{ doc.name }}</a> </td>
                                             <td>
                                                 {% for cate in doc.category.all %}
-                                                    <span class="label" style="background-color: {{cat.color}}">{{cate.name}}</span>
+                                                    <span class="label" style="background-color: {{cate.color}}">{{cate.name}}</span>
                                                 {% endfor %}
                                             </td>
                                             <td> {{ doc.description }} </td>
@@ -113,8 +113,8 @@
                                         <tr>
                                             <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
                                             <td>
-                                                {% for cat in cats|get_item:fit.pk %}
-                                                <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                                                {% for cate in cats|get_item:fit.pk %}
+                                                <span class="label" style="background-color: {{cate.color}}">{{cate.name}}</span>
                                                 {% endfor %}
                                             </td>
                                             <td> {{ fit.description }} </td>
