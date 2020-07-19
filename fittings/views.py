@@ -384,13 +384,82 @@ def add_category(request):
     groups = Group.objects.all()
 
     ctx = {'groups': groups, 'fits': fits, 'docs': docs}
-    return render(request, 'fittings/cat_form.html', ctx)
+    return render(request, 'fittings/create_category.html', ctx)
 
 
+@permission_required('fittings.access_fittings')
+@login_required()
 def view_category(request, cat_id):
-    return redirect('fittings:dashboard')
+    # TODO: Check that the user has access to the category before doing anything else.
+    ctx = {}
+    doc_dict = {}
+    try:
+        cat = Category.objects\
+            .prefetch_related('groups')\
+            .prefetch_related('doctrines')\
+            .prefetch_related('fittings')\
+            .get(pk=cat_id)
+        ctx['cat'] = cat
+    except Exception as e:
+        messages.warning(request, "Category not found!")
+        return redirect("fittings:dashboard")
+
+    # Get Docs and fittings
+    # TODO: Refactor this code for doctrines and fittings into its own function.
+    if request.user.has_perm('fittings.manage'):
+        docs = cat.doctrines.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .prefetch_related('category').all()
+        fits = cat.fittings.prefetch_related('category', 'doctrines__category', 'ship_type').all()
+    else:
+        groups = request.user.groups.all()
+        docs = cat.doctrines.prefetch_related('category')\
+            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .filter(
+                Q(category__groups__in=groups) |
+                Q(category__isnull=True) |
+                Q(category__groups__isnull=True))
+        fits = cat.fittings.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
+            Q(Q(category__groups__in=groups) |
+              Q(category__isnull=True) |
+              Q(category__groups__isnull=True)) &
+            Q(Q(doctrines__category__groups__isnull=True) |
+              Q(doctrines__category__groups__in=groups) |
+              Q(doctrines__category__isnull=True)))
+
+    for doc in docs:
+        fs = []
+        ids = []
+        for fit in doc.fittings.all():
+            if fit.ship_type_type_id not in ids:
+                fs.append(fit)
+                ids.append(fit.ship_type_type_id)
+        doc_dict[doc.pk] = fs
+        del fs, ids
+    ctx['docs'] = docs
+    ctx['doc_dict'] = doc_dict
+
+    categories = dict()
+    for fit in fits:
+        cats = []
+        ids = []
+        for cat in fit.category.all():
+            if cat.pk not in ids:
+                cats.append(cat)
+                ids.append(cat.pk)
+        for doc in fit.doctrines.all():
+            for cat in doc.category.all():
+                if cat.pk not in ids:
+                    cats.append(cat)
+                    ids.append(cat.pk)
+        categories[fit.pk] = cats
+    ctx['fits'] = fits
+    ctx['cats'] = categories
+
+    return render(request, 'fittings/view_category.html', ctx)
 
 
+@permission_required('fittings.manage')
+@login_required()
 def edit_category(request, cat_id):
     pass
 
