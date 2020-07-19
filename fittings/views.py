@@ -13,7 +13,64 @@ from .tasks import create_fit, update_fit
 logger = get_extension_logger(__name__)
 
 
-# Create your views here.
+# Helper Function
+def _get_fits_qs(request, groups, **kwargs):
+    """
+    Returns a quereyset representing the fits that a user can access based on their groups and/or permissions.
+    Users with the manage permission will always receive all relevant fittings.
+    :param request: Request object
+    :param groups: Queryset representing a set of groups to be checked against.
+    :param kwargs: Valid Kwargs:
+       obj - An object with a MTM fittings relation to use instead of the class.
+    :return: Quereyset representing the fits that the user has access to.
+    """
+    if 'obj' in kwargs:
+        cls = kwargs['obj'].fittings
+    else:
+        cls = Fitting.objects
+
+    if request.user.has_perm('fittings.manage'):
+        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type').all()
+    else:
+        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
+            Q(Q(category__groups__in=groups) |
+              Q(category__isnull=True) |
+              Q(category__groups__isnull=True)) &
+            Q(Q(doctrines__category__groups__isnull=True) |
+              Q(doctrines__category__groups__in=groups) |
+              Q(doctrines__category__isnull=True)))
+
+    return fits
+
+
+def _get_docs_qs(request, groups, **kwargs):
+    """
+    Returns a quereyset representing the doctrines that a user can access based on their groups and/or permissions.
+    Users with the manage permission will always receive all relevant doctrines.
+    :param request: Request object
+    :param groups: Queryset representing a set of groups to be checked against.
+    :param kwargs: Valid Kwargs: obj - An object with a MTM doctrine relation to use instead of the class.
+    :return: Quereyset representing the doctrines that the user has access to.
+    """
+    if 'obj' in kwargs:
+        cls = kwargs['obj'].doctrines
+    else:
+        cls = Doctrine.objects
+
+    if request.user.has_perm('fittings.manage'):
+        docs = cls.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
+            .prefetch_related('category').all()
+    else:
+        docs = cls.prefetch_related('category') \
+            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type'))) \
+            .filter(
+            Q(category__groups__in=groups) |
+            Q(category__isnull=True) |
+            Q(category__groups__isnull=True))
+
+    return docs
+
+
 def _build_slots(fit):
     ship = fit.ship_type
     attributes = (12, 13, 14, 1137, 1367, 2056)
@@ -68,20 +125,14 @@ def _check_fit_access(user, fit_id: int) -> bool:
     return fits
 
 
+# View Functions
 @permission_required('fittings.access_fittings')
 @login_required()
 def dashboard(request):
     doc_dict = {}
-    if request.user.has_perm('fittings.manage'):
-        docs = Doctrine.objects.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
-            .prefetch_related('category').all()
-    else:
-        docs = Doctrine.objects.prefetch_related('category')\
-            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
-            .filter(
-                Q(category__groups__in=request.user.groups.all()) |
-                Q(category__isnull=True) |
-                Q(category__groups__isnull=True))
+    groups = request.user.groups.all()
+    docs = _get_docs_qs(request, groups)
+
     for doc in docs:
         fits = []
         ids = []
@@ -259,17 +310,9 @@ def view_doctrine(request, doctrine_id):
 def view_all_fits(request):
     ctx = {}
 
-    if request.user.has_perm('fittings.manage'):
-        fits = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type').all()
-    else:
-        groups = request.user.groups.all()
-        fits = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
-            Q(Q(category__groups__in=groups) |
-              Q(category__isnull=True) |
-              Q(category__groups__isnull=True)) &
-            Q(Q(doctrines__category__groups__isnull=True) |
-              Q(doctrines__category__groups__in=groups) |
-              Q(doctrines__category__isnull=True)))
+    groups = request.user.groups.all()
+    fits = _get_fits_qs(request, groups)
+
     ctx['fits'] = fits
     categories = dict()
     for fit in fits:
@@ -405,26 +448,9 @@ def view_category(request, cat_id):
         return redirect("fittings:dashboard")
 
     # Get Docs and fittings
-    # TODO: Refactor this code for doctrines and fittings into its own function.
-    if request.user.has_perm('fittings.manage'):
-        docs = cat.doctrines.prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
-            .prefetch_related('category').all()
-        fits = cat.fittings.prefetch_related('category', 'doctrines__category', 'ship_type').all()
-    else:
-        groups = request.user.groups.all()
-        docs = cat.doctrines.prefetch_related('category')\
-            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))\
-            .filter(
-                Q(category__groups__in=groups) |
-                Q(category__isnull=True) |
-                Q(category__groups__isnull=True))
-        fits = cat.fittings.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
-            Q(Q(category__groups__in=groups) |
-              Q(category__isnull=True) |
-              Q(category__groups__isnull=True)) &
-            Q(Q(doctrines__category__groups__isnull=True) |
-              Q(doctrines__category__groups__in=groups) |
-              Q(doctrines__category__isnull=True)))
+    groups = request.user.groups.all()
+    fits = _get_fits_qs(request, groups, obj=cat)
+    docs = _get_docs_qs(request, groups, obj=cat)
 
     for doc in docs:
         fs = []
