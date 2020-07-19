@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Count
 
 from .forms import CategoryForm
-from .models import Fitting, UniCategory
+from .models import Fitting, Category
 
 # Register your models here.
 admin.site.register(Fitting)
@@ -38,4 +38,4 @@ class CategoryAdmin(admin.ModelAdmin):
     filter_horizontal = ('fittings', 'doctrines', 'groups')
 
 
-admin.site.register(UniCategory, CategoryAdmin)
+admin.site.register(Category, CategoryAdmin)

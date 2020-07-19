@@ -6,7 +6,7 @@ from django.db.models import Subquery, OuterRef, Count, Q, Prefetch, F
 from django.shortcuts import render, redirect
 from esi.decorators import token_required
 
-from .models import Doctrine, Fitting, Type, FittingItem, UniCategory
+from .models import Doctrine, Fitting, Type, FittingItem, Category
 from .providers import esi
 from .tasks import create_fit, update_fit
 
@@ -345,7 +345,7 @@ def delete_doctrine(request, doctrine_id):
 @login_required()
 def view_all_categories(request):
     ctx = {}
-    cats = UniCategory.objects\
+    cats = Category.objects\
         .all()\
         .annotate(groups_count=Count('groups', distinct=True))\
         .annotate(doctrines_count=Count('doctrines', distinct=True))\
@@ -370,7 +370,7 @@ def add_category(request):
         docSelect = [int(doc) for doc in request.POST.getlist('docSelect')]
         groupSelect = [int(grp) for grp in request.POST.getlist('groupSelect')]
 
-        cat = UniCategory(name=name, color=color)
+        cat = Category(name=name, color=color)
         cat.save()
         for fit in fitSelect:
             cat.fittings.add(fit)

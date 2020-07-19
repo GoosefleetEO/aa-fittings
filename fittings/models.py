@@ -202,7 +202,7 @@ class Doctrine(models.Model):
 
 
 # Unified Category
-class UniCategory(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=255, null=False)
     color = models.TextField(max_length=20, default="#FFFFFF")  # Tag Color
 
@@ -221,9 +221,9 @@ class UniCategory(models.Model):
                                               " with permission to access permissions to the fittings module.")
 
     def __str__(self):
-        return f"UniCategory: {self.name}"
+        return f"Category: {self.name}"
 
     class Meta:
-        verbose_name = "Unified Category"
-        verbose_name_plural = "Unified Categories"
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
         default_permissions = (())
