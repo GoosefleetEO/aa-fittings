@@ -421,6 +421,8 @@ def add_category(request):
             cat.doctrines.add(doc)
         for group in groupSelect:
             cat.groups.add(group)
+
+        messages.success(request, "Category successfully created!")
         return redirect('fittings:view_category', cat.pk)
     fits = Fitting.objects.all()
     docs = Doctrine.objects.all()
@@ -487,7 +489,46 @@ def view_category(request, cat_id):
 @permission_required('fittings.manage')
 @login_required()
 def edit_category(request, cat_id):
-    pass
+    ctx = {}
+    try:
+        cat = Category.objects \
+            .prefetch_related('groups') \
+            .prefetch_related('doctrines') \
+            .prefetch_related('fittings') \
+            .get(pk=cat_id)
+        ctx['cat'] = cat
+    except Exception as e:
+        messages.warning(request, "Category not found!")
+        return redirect("fittings:dashboard")
+
+    if request.method == "POST":
+        name = request.POST['name']
+        logger.debug(f"Updating Category {cat.name} (Now {name})")
+
+        color = request.POST['color']
+        fitSelect = [int(fit) for fit in request.POST.getlist('fitSelect')]
+        docSelect = [int(doc) for doc in request.POST.getlist('docSelect')]
+        groupSelect = [int(grp) for grp in request.POST.getlist('groupSelect')]
+
+        cat.name = name
+        cat.color = color
+        cat.save(update_fields=['name','color'])
+        cat.doctrines.set(docSelect)
+        cat.fittings.set(fitSelect)
+        cat.groups.set(groupSelect)
+
+        messages.success(request, "Category successfully edited!")
+        return redirect('fittings:view_category', cat.pk)
+
+    groups = Group.objects.all()
+    doctrines = Doctrine.objects.all()
+    fittings = Fitting.objects.all()
+
+    ctx['groups'] = groups
+    ctx['docs'] = doctrines
+    ctx['fits'] = fittings
+
+    return render(request, 'fittings/edit_category.html', context=ctx)
 
 
 @permission_required('fittings.manage')
