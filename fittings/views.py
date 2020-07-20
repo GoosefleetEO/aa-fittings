@@ -282,7 +282,8 @@ def view_doctrine(request, doctrine_id):
 
     ctx['doctrine'] = doctrine
     ctx['d_cats'] = doctrine.category.all()
-    ctx['fits'] = doctrine.fittings.all()
+    grp = request.user.groups.all()
+    ctx['fits'] = _get_fits_qs(request, grp, obj=doctrine)
 
     # Build fit category list
     categories = dict()
