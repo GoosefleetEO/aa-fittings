@@ -47,7 +47,14 @@
                                     <td> {{ cat.groups_count }}</td>
                                     <td> {{ cat.doctrines_count }}</td>
                                     <td> {{ cat.total_fits }} </td>
-                                    <td> Edit Button will go here. </td>
+                                    <td>
+                                        <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                                            <span class="fa fas fa-pencil"></span>
+                                        </a>
+                                        <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
+                                            <span class="fa fas fa-eye"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
