@@ -3,9 +3,6 @@
 {% load humanize %}
 {% load filters %}
 {% load static %}
-{% block extra_css %}
-    {% include 'bundles/datatables-css.html' %}
-{% endblock %}
 
 {% block page_title %}{{ doctrine.name }} {% trans "Doctrine" %}{% endblock %}
 
@@ -49,7 +46,7 @@
                 <h4 style="text-align: center">{{ doctrine.name }}</h4>
                 <h5 style="text-align: center">
                         {% for cat in d_cats %}
-                            <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                            <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
                         {% endfor %}
                 </h5>
                 <hr />
