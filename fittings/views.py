@@ -14,9 +14,22 @@ logger = get_extension_logger(__name__)
 
 
 # Helper Function
+def _get_accessible_categories(user):
+    """
+    Returns categories that the user has access to.
+    :param user:
+    :return:
+    """
+    groups = user.groups.all().prefetch_related('access_restricted_category')
+    cats = Category.objects.none()
+    for group in groups:
+        cats = cats.union(group.access_restricted_category.all())
+    return tuple(cats.distinct())
+
+
 def _get_fits_qs(request, groups, **kwargs):
     """
-    Returns a quereyset representing the fits that a user can access based on their groups and/or permissions.
+    Returns a queryset representing the fits that a user can access based on their groups and/or permissions.
     Users with the manage permission will always receive all relevant fittings.
     :param request: Request object
     :param groups: Queryset representing a set of groups to be checked against.
@@ -26,26 +39,40 @@ def _get_fits_qs(request, groups, **kwargs):
     """
     if 'obj' in kwargs:
         cls = kwargs['obj'].fittings
+        p_fits = Fitting.objects.none()
     else:
         cls = Fitting.objects
+        p_fits = _get_public_fits()
 
     if request.user.has_perm('fittings.manage'):
         fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type').all()
     else:
-        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type').filter(
-            Q(Q(category__groups__in=groups) |
-              Q(category__isnull=True) |
-              Q(category__groups__isnull=True)) &
-            Q(Q(doctrines__category__groups__isnull=True) |
-              Q(doctrines__category__groups__in=groups) |
-              Q(doctrines__category__isnull=True)))
-
+        cats = _get_accessible_categories(request.user)
+        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type')\
+            .filter(Q(Q(category__in=cats) | Q(doctrines__category__in=cats))).distinct()
+        fits = p_fits.union(fits)
     return fits
+
+
+def _get_public_fits(np=False):
+    """
+    Returns a list of all public fits.
+    :param np: Bool flag to turn off prefetching if needed.
+    :return:
+    """
+    if np:
+        f = Fitting.objects.filter(Q(category__groups__isnull=True) | Q(doctrines__category__groups__isnull=True))\
+            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False))
+    else:
+        f = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type')\
+            .filter(Q(category__groups__isnull=True) | Q(doctrines__category__groups__isnull=True))\
+            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False))
+    return f
 
 
 def _get_docs_qs(request, groups, **kwargs):
     """
-    Returns a quereyset representing the doctrines that a user can access based on their groups and/or permissions.
+    Returns a queryset representing the doctrines that a user can access based on their groups and/or permissions.
     Users with the manage permission will always receive all relevant doctrines.
     :param request: Request object
     :param groups: Queryset representing a set of groups to be checked against.
@@ -107,25 +134,32 @@ def _build_slots(fit):
     return slots
 
 
-def _check_fit_access(user, fit_id: int) -> bool:
-    fit_id = int(fit_id)
+def _check_fit_access(request, fit_id: int) -> bool:
+    fit = Fitting.objects.prefetch_related('category', 'doctrines', 'doctrines__category').get(pk=int(fit_id))
+    user = request.user
+    a_cats = _get_accessible_categories(user)
+    f_cats = fit.category.all()
+    for d in fit.doctrines.all():
+        f_cats = f_cats.union(f_cats, d.category.all())
+    pub = _get_public_fits(True)
     logger.debug(f"Checking user {user.pk} access to fit {fit_id}")
     if user.has_perm('fittings.manage'):
         logger.debug(f"User {user.pk} has manage permissions, returning True.")
         return True
-    groups = user.groups.all()
-    fits = Fitting.objects.filter(
-        Q(Q(category__groups__in=groups) |
-          Q(category__isnull=True) |
-          Q(category__groups__isnull=True)) &
-        Q(Q(doctrines__category__groups__isnull=True) |
-          Q(doctrines__category__groups__in=groups) |
-          Q(doctrines__category__isnull=True))).filter(pk=fit_id).exists()
-    logger.debug(f"returning {fits}")
-    return fits
+
+    access = (fit in pub) or any(c in a_cats for c in f_cats)
+    logger.debug(f"returning {access}")
+    return access
 
 
 # View Functions
+@permission_required('fittings.access_fittings')
+@login_required()
+def test(request):
+    ctx = {'cats': _check_fit_access(request, 2)}
+    return render(request, 'fittings/test.html', context=ctx)
+
+
 @permission_required('fittings.access_fittings')
 @login_required()
 def dashboard(request):
@@ -195,7 +229,7 @@ def view_fit(request, fit_id):
         return redirect('fittings:dashboard')
 
     # Ensure that the character should have access to the fitting.
-    access = _check_fit_access(request.user, fit_id)
+    access = _check_fit_access(request, fit_id)
 
     if not access:
         messages.warning(request, 'You do not have access to that fit.')
@@ -282,8 +316,7 @@ def view_doctrine(request, doctrine_id):
 
     ctx['doctrine'] = doctrine
     ctx['d_cats'] = doctrine.category.all()
-    grp = request.user.groups.all()
-    ctx['fits'] = _get_fits_qs(request, grp, obj=doctrine)
+    ctx['fits'] = doctrine.fittings.all()
 
     # Build fit category list
     categories = dict()
@@ -558,7 +591,7 @@ def save_fit(request, token, fit_id):
 
         return redirect('fitting:dashboard')
 
-    access = _check_fit_access(request.user, fit_id)
+    access = _check_fit_access(request, fit_id)
     if not access:
         messages.warning(request, 'You do not have access to that fit.')
 
