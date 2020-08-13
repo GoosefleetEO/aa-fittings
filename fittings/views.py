@@ -155,13 +155,6 @@ def _check_fit_access(request, fit_id: int) -> bool:
 # View Functions
 @permission_required('fittings.access_fittings')
 @login_required()
-def test(request):
-    ctx = {'cats': _check_fit_access(request, 2)}
-    return render(request, 'fittings/test.html', context=ctx)
-
-
-@permission_required('fittings.access_fittings')
-@login_required()
 def dashboard(request):
     doc_dict = {}
     groups = request.user.groups.all()
