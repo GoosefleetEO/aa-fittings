@@ -29,7 +29,6 @@ class EftParser:
         fit_name = ''
         counter = 0  # Slot flag number
         last_line = ''
-        end_fit = False
 
         for section in sections:
             counter = 0;
@@ -59,12 +58,10 @@ class EftParser:
                         else:
                             
                             quantity = line.split()[-1]  # Quantity will always be the last element, if it is there.
-
+                            
                             if 'x' in quantity and quantity[1:].isdigit():
                                 item_name = line.split(quantity)[0].strip()
                                 cargo.append({'name': item_name, 'quantity': int(quantity.strip('x')), 'section_name': 'Cargo'})
-                            elif end_fit is True:
-                                cargo.append({'name': line.strip(), 'quantity': 1, 'section_name': 'Cargo'})
                             else:
                                 modules.append({'name': line.strip(), 'charge': '', 'count': counter})
                     counter += 1
@@ -96,11 +93,14 @@ class Section:
         for line in self.lines:
             if line.startswith('['):
                 return False
-            quantity = line.split()[-1]
-            if 'x' in quantity and quantity[1:].isdigit():
-                types.append(_get_type(line.split(quantity)[0].strip()))
+            if ',' in line:
+                types.append(_get_type(line.split(',')[0].strip()))
             else:
-                types.append(_get_type(line.strip()))
+                quantity = line.split()[-1]
+                if 'x' in quantity and quantity[1:].isdigit():
+                    types.append(_get_type(line.split(quantity)[0].strip()))
+                else:
+                    types.append(_get_type(line.strip()))
         return all(_type is not None and _type.group.category_id == 18 for _type in types)
 
     def isFighterBay(self):
@@ -108,11 +108,14 @@ class Section:
         for line in self.lines:
             if line.startswith('['):
                 return False
-            quantity = line.split()[-1]
-            if 'x' in quantity and quantity[1:].isdigit():
-                types.append(_get_type(line.split(quantity)[0].strip()))
+            if ',' in line:
+                types.append(_get_type(line.split(',')[0].strip()))
             else:
-                types.append(_get_type(line.strip()))
+                quantity = line.split()[-1]
+                if 'x' in quantity and quantity[1:].isdigit():
+                    types.append(_get_type(line.split(quantity)[0].strip()))
+                else:
+                    types.append(_get_type(line.strip()))
         return all(_type is not None and _type.group.category_id == 87 for _type in types)
 
 
@@ -140,6 +143,10 @@ def create_fitting_item(fit, item):
     if count is None:
         flag = item['section_name']
         quantity = item['quantity']
+    # Check due to active drug from pyfa not showing quantities
+    elif len(effects) == 0:
+        flag = 'Cargo'
+        quantity = 1
     else:
         flag = flags[effects[0]] + str(count)
 
