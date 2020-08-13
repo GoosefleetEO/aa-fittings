@@ -4,16 +4,6 @@
 {% load filters %}
 {% load static %}
 
-{% block extra_css %}
-    <style>
-        .form-control {
-            margin: 2px;
-        }
-
-    </style>
-
-{% endblock %}
-
 {% block page_title %}{{ fitting.name }} {% trans "Fit" %}{% endblock %}
 
 {% block fittings_block %}
@@ -149,8 +139,11 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <div class="col-sm-12 col-md-12 text-center">
+                        <div class="col-sm-12 col-md-12 text-center" style="margin-bottom: 5px;">
                             <h3>{{fit.name}}</h3>
+                            {% for cat in cats %}
+                            <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
+                            {% endfor %}
                         </div>
                         <div class="col-sm-12 col-md-12">
                             <div class="panel panel-warning">

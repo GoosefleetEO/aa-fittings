@@ -1,0 +1,152 @@
+{% extends 'fittings/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load filters %}
+{% load static %}
+
+{% block more_css %}
+    <style>
+        .tp {
+            padding-bottom: 0;
+        }
+        .btm {
+            padding-top: 5px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .pd {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .mv {
+            margin-left: 15px;
+        }
+    </style>
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+
+{% block page_title %}{% trans "View Category" %}{% endblock %}
+
+{% block fittings_block %}
+    <div class="container col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Category
+                {% if perms.fittings.manage %}
+                <div class="pull-right" style="margin-top: -2px !important;">
+                   <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                       <span class="fa fas fa-pencil"></span>
+                   </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="panel-body tp">
+                <strong>Name: </strong>
+                <br/>
+                <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                <div id="spacer" style="padding-top: 5px;"></div>
+                {% if perms.fittings.manage %}
+                    <strong>Groups: </strong>
+                    <br />
+                    {% if cat.groups.all|length != 0 %}
+                      {% for group in cat.groups.all %} <span class="label label-primary">{{group.name}}</span> {% endfor %}
+                    {% else %}
+                      <span class="label label-warning">Category is public</span>
+                    {% endif %}
+                {% endif %}
+
+            </div>
+            <div class="panel-body btm">
+                <ul class="nav nav-tabs" style="margin-bottom: 10px;">
+                    <li class="active mv"><a data-toggle="tab" href="#doctrines">Doctrines</a></li>
+                    <li><a data-toggle="tab" href="#fittings">Fittings</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade-in active panel-default pd" id="doctrines">
+                        <table class="table table-striped dataTable" role="table" id="docTable">
+                            <thead>
+                                <th> </th>
+                                <th>Name</th>
+                                <th>Categories</th>
+                                <th>Description</th>
+                                <th>Ships</th>
+                            </thead>
+                            <tbody>
+                                {% if not docs %}
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="alert alert-warning" style="text-align: center"> No Doctrines Found </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    {% for doc in docs %}
+                                        <tr>
+                                            <td> <a href="{% url 'fittings:view_doctrine' doc.pk %}"><img src="{{ doc.icon_url }}" class="img-circle" style="display: block; margin: auto;"/> </a></td>
+                                            <td> <a href="{% url 'fittings:view_doctrine' doc.pk %}">{{ doc.name }}</a> </td>
+                                            <td>
+                                                {% for cate in doc.category.all %}
+                                                    <span class="label" style="background-color: {{cate.color}}">{{cate.name}}</span>
+                                                {% endfor %}
+                                            </td>
+                                            <td> {{ doc.description }} </td>
+                                            <td>
+                                                {% for fitting in doc_dict|get_item:doc.pk %}
+                                                    <img src="https://imageserver.eveonline.com/Type/{{ fitting.ship_type_type_id }}_64.png" class="img-circle" style="height: 32px; width: 32px;" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade-in panel-default pd" id="fittings">
+                        <table class="table table-hover dataTable" id="fitTable">
+                            <thead>
+                                <th>Name</th>
+                                <th>Categories</th>
+                                <th>Description</th>
+                                <th>Ship Type</th>
+                            </thead>
+                            <tbody>
+                                {% if not fits %}
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    {% for fit in fits %}
+                                        <tr>
+                                            <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
+                                            <td>
+                                                {% for cate in cats|get_item:fit.pk %}
+                                                <span class="label" style="background-color: {{cate.color}}">{{cate.name}}</span>
+                                                {% endfor %}
+                                            </td>
+                                            <td> {{ fit.description }} </td>
+                                            <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+{% endblock %}
+
+{% block extra_script %}
+    $(document).ready(function(){
+        $('#docTable').DataTable();
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#fitTable').DataTable();
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+{% endblock %}

@@ -1,16 +1,12 @@
-import os
-import requests
-import bz2
-import sqlite3
-import re
-
-from .models import Fitting, FittingItem, Type, DogmaEffect, DogmaAttribute
-from .providers import esi
-from celery import shared_task
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from allianceauth.services.hooks import get_extension_logger
+from celery import shared_task
+
+from .models import Fitting, FittingItem, Type
 
 logger = get_extension_logger(__name__)
+
 
 class EftParser:
     def __init__(self, eft_text):

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+
 from fittings import __version__
 
 with open("README.md", "r") as fh:
@@ -39,7 +40,9 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',

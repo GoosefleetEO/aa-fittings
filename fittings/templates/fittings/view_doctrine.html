@@ -3,9 +3,6 @@
 {% load humanize %}
 {% load filters %}
 {% load static %}
-{% block extra_css %}
-    {% include 'bundles/datatables-css.html' %}
-{% endblock %}
 
 {% block page_title %}{{ doctrine.name }} {% trans "Doctrine" %}{% endblock %}
 
@@ -47,6 +44,11 @@
             <div class="panel-body">
                 <img src="{{ doctrine.icon_url }}" class="img-circle center-block" style="text-align: center"/>
                 <h4 style="text-align: center">{{ doctrine.name }}</h4>
+                <h5 style="text-align: center">
+                        {% for cat in d_cats %}
+                            <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
+                        {% endfor %}
+                </h5>
                 <hr />
                 <dl>
                     <dt>Description</dt>
@@ -68,6 +70,7 @@
                 <table class="table table-hover dataTable" id="fitsTable">
                     <thead>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Description</th>
                         <th>Ship Type</th>
                     </thead>
@@ -82,6 +85,11 @@
                             {% for fit in fits %}
                                 <tr>
                                     <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
+                                    <td>
+                                        {% for cat in f_cats|get_item:fit.pk %}
+                                            <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                                        {% endfor %}
+                                    </td>
                                     <td> {{ fit.description }} </td>
                                     <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }}</td>
                                 </tr>

@@ -1,9 +1,9 @@
+from django.contrib.auth.models import Group
 from django.db import models
+from django.db.models import Subquery, OuterRef
 from model_utils import Choices
-from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
-from django.db.models import Subquery, OuterRef, CharField
 
-# TODO: Investigate effect of changing group_id to FK from integer field.
+from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
 
 
 # Category Model
@@ -101,22 +101,23 @@ class Fitting(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.ship_type.type_name, self.name)
-        
+
+    @property
     def eft(self):
         types = Type.objects.filter(type_id=OuterRef('type_id'))
         items = FittingItem.objects.filter(fit=self).annotate(item_name=Subquery(types.values('type_name')))
 
         eft = '[' + self.ship_type.type_name + ', ' + self.name + ']\n\n'
 
-        temp = { 'Cargo': [], 'FighterBay': [], 'DroneBay': []}
+        temp = {'Cargo': [], 'FighterBay': [], 'DroneBay': []}
         
         slots = [
-            { 'key': 'LoSlot', 'range': 8 },
-            { 'key': 'MedSlot', 'range': 8 },
-            { 'key': 'HiSlot', 'range': 8 },
-            { 'key': 'RigSlot', 'range': 3 },
-            { 'key': 'SubSystemSlot', 'range': 4 },
-            { 'key': 'ServiceSlot', 'range': 8 }
+            {'key': 'LoSlot', 'range': 8},
+            {'key': 'MedSlot', 'range': 8},
+            {'key': 'HiSlot', 'range': 8},
+            {'key': 'RigSlot', 'range': 3},
+            {'key': 'SubSystemSlot', 'range': 4},
+            {'key': 'ServiceSlot', 'range': 8}  # This is likely much higher than the actual max.
         ]
         
         for item in items:
@@ -130,15 +131,14 @@ class Fitting(models.Model):
                 temp[item.flag] = item.item_name
 
         for slot in slots:
-            isEmpty = True
+            is_empty = True
             for i in range(0, slot['range']):
                 key = slot['key'] + str(i)
                 if key in temp:
                     eft += temp[key] + '\n'
-                    isEmpty = False
-            if isEmpty == False:
+                    is_empty = False
+            if not is_empty:
                 eft += '\n'
-
 
         slots = [
             'FighterBay',
@@ -193,7 +193,37 @@ class Doctrine(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
     class Meta:
         default_permissions = (())
         permissions = (("manage", "Can manage doctrines and fits."),)
 
+
+# Unified Category
+class Category(models.Model):
+    name = models.CharField(max_length=255, null=False)
+    color = models.TextField(max_length=20, default="#FFFFFF")  # Tag Color
+
+    fittings = models.ManyToManyField(Fitting, blank=True, related_name="category",
+                                      help_text="Fittings only need to be tagged with a category if they are "
+                                                "not included in any doctrines, or if they need to be labled "
+                                                "in addition to their doctrine's category.")
+    doctrines = models.ManyToManyField(Doctrine, blank=True, related_name="category",
+                                       help_text="All fittings in a doctrine will be treated as if they are in the "
+                                                 "doctrine's category.")
+
+    groups = models.ManyToManyField(Group, blank=True, related_name="access_restricted_category",
+                                    help_text="Groups listed here will be able to access fits and doctrines"
+                                              " listed under this category. If a category has no groups listed"
+                                              " then it is considered an public category, accessible to anyone"
+                                              " with permission to access permissions to the fittings module.")
+
+    def __str__(self):
+        return f"Category: {self.name}"
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        default_permissions = (())

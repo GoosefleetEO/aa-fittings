@@ -18,8 +18,13 @@
         .flex-item {
 
         }
+        a.nostyle {
+            color: inherit;
+            text-decoration: none !important;
+        }
     </style>
     {% include 'bundles/datatables-css.html' %}
+    {% block more_css %}{%endblock%}
 {% endblock extra_css %}
 {% block content %}
     <div class="col-lg-12">
@@ -38,13 +43,22 @@
                     </div>
                     <ul class="nav navbar-nav navbar-left">
                             <li> <a href="{% url 'fittings:view_all_fits' %}">View All Fits</a></li>
+                            {% if perms.fittings.manage %}
+                            <li><a href="{% url 'fittings:view_all_categories' %}">View All Categories</a></li>
+                            {% endif %}
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if perms.fittings.manage %}
-                            <li> <a href="{% url 'fittings:add_fit' %}">Add Fitting</a></li>
-                            <li> <a href="{% url 'fittings:add_doctrine' %}">Add Doctrine</a></li>
-                        {% endif %}
-                    </ul>
+                    {% if perms.fittings.manage %}
+                        <div class="dropdown pull-right" style="margin-top: .8em;">
+                            <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="manageDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-plus"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="manageDrop">
+                                <li> <a href="{% url 'fittings:add_fit' %}">Fitting</a></li>
+                                <li> <a href="{% url 'fittings:add_doctrine' %}">Doctrine</a></li>
+                                <li> <a href="{% url 'fittings:add_category' %}">Category</a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
                 </div>
             </nav>
             {% block fittings_block %}{% endblock %}

@@ -4,8 +4,7 @@
 {% load filters %}
 
 
-
-{% block page_title %}{% trans "View All Fits" %}{% endblock %}
+{% block page_title %}{% trans "View All Categories" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -19,7 +18,7 @@
         {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Fit List
+            Category List
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -29,33 +28,39 @@
                 <table class="table table-hover dataTable" id="fitTable">
                     <thead>
                         <th>Name</th>
-                        <th>Categories</th>
-                        <th>Description</th>
-                        <th>Ship Type</th>
+                        <th>Groups Assigned</th>
+                        <th>Doctrines Assigned</th>
+                        <th>Fittings Assigned</th>
+                        <th> </th>
                     </thead>
                     <tbody>
-                        {% if not fits %}
+                        {% if not cats %}
                             <tr>
                                 <td colspan="4">
-                                    <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                                    <div class="alert alert-warning" style="text-align: center"> No Categories Found </div>
                                 </td>
                             </tr>
                         {% else %}
-                            {% for fit in fits %}
+                            {% for cat in cats %}
                                 <tr>
-                                    <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
+                                    <td> <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span> </td>
+                                    <td> {{ cat.groups_count }}</td>
+                                    <td> {{ cat.doctrines_count }}</td>
+                                    <td> {{ cat.total_fits }} </td>
                                     <td>
-                                        {% for cat in cats|get_item:fit.pk %}
-                                        <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
-                                        {% endfor %}
+                                        <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                                            <span class="fa fas fa-pencil"></span>
+                                        </a>
+                                        <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
+                                            <span class="fa fas fa-eye"></span>
+                                        </a>
                                     </td>
-                                    <td> {{ fit.description }} </td>
-                                    <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }} </td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
                     </tbody>
                 </table>
+                <h6><i><i class="fas fa-exclamation-triangle"></i>*Note: Fit counts may be inaccurate as fits marked independently of doctrines may be counted more than once.</i></h6>
             </div>
         </div>
     </div>
