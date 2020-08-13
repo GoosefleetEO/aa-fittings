@@ -32,13 +32,20 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 Category
+                {% if perms.fittings.manage %}
+                <div class="pull-right" style="margin-top: -2px !important;">
+                   <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                       <span class="fa fas fa-pencil"></span>
+                   </a>
+                </div>
+                {% endif %}
             </div>
             <div class="panel-body tp">
                 <strong>Name: </strong>
                 <br/>
                 <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
                 <div id="spacer" style="padding-top: 5px;"></div>
-                {% if perms.manage %}
+                {% if perms.fittings.manage %}
                     <strong>Groups: </strong>
                     <br />
                     {% if cat.groups.all|length != 0 %}
