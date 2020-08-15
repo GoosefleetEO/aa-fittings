@@ -54,6 +54,13 @@ class Type(models.Model):
     class Meta:
         default_permissions = ()
 
+class TypeHistory(models.Model):
+    type_id = models.BigIntegerField()
+    type_name = models.CharField(max_length=500)
+
+    class Meta:
+        default_permissions = ()
+
 
 # Dogma Attribute
 class DogmaAttribute(models.Model):
