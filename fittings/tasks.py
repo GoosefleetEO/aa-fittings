@@ -239,3 +239,17 @@ def missing_group_type_fix():
         _ = item.result()
 
     logger.info("Done updating groups.")
+
+@shared_task
+def update_type_name():
+    logger.info("Started updating type names for preexisting types used in fittings.")
+    fittingItem = FittingItem.objects.order_by('type_id').values_list('type_id', flat=True).distinct()
+    _processes = []
+    with ThreadPoolExecutor(max_workers=50) as ex:
+        for _fitting_item_type_id in fittingItem:
+            _processes.append(ex.submit(Type.objects.update_type_from_id, _fitting_item_type_id))
+
+    for item in as_completed(_processes):
+        _ = item.result()
+
+    logger.info("Done updating type names.")

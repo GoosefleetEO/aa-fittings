@@ -179,6 +179,37 @@ class TypeManager(models.Manager):
 
         return obj[0]
 
+    # Used for the periodic update name task
+    def update_type_from_id(self, type_id):
+        c = esi.client
+        type_result = c.Universe.get_universe_types_type_id(type_id=type_id).result()
+        type_name = type_result.pop('name')
+        type_result['type_name'] = type_name
+        attributes = type_result.pop('dogma_attributes')
+        effects = type_result.pop('dogma_effects')
+        grp_id = type_result.pop('group_id')
+        from .models import ItemGroup
+        type_result['group'] = ItemGroup.objects.get_or_create(grp_id)
+
+        obj = self.get(type_id=type_id)
+        if obj.type_name != type_name:
+            from .models import TypeHistory
+            TypeHistory.objects.create(type_id=obj.type_id, type_name=obj.type_name)
+            obj.type_name = type_name
+            obj.save()
+            
+        # Handle Attributes
+        from .models import DogmaAttribute
+        if attributes is not None:
+            DogmaAttribute.objects.bulk_attributes(attributes, obj.pk)
+
+        # Handle Effects
+        from .models import DogmaEffect
+        if effects is not None:
+            DogmaEffect.objects.bulk_effects(effects, obj.pk)
+
+        return obj
+
 
 class DogmaAttributeManager(models.Manager):
     def bulk_attributes(self, attributes, type_pk):

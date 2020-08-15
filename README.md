@@ -32,6 +32,7 @@ Fittings offers the following features:
 * Categorization of your fittings and doctrines to keep things organized
 and easy to manage.
   * Access to categories can be restricted to specific groups.
+* Periodic update for module names
 
 ## Screenshots
 
@@ -66,7 +67,15 @@ $ pip install fittings
 Configure your AA settings (`local.py`) as follows:
 
 - Add `'fittings',` to `INSTALLED_APPS`
+- Add these line to the bottom of the settings file to have module name updates
 
+```python
+# Fittings Module
+CELERYBEAT_SCHEDULE['fittings_check_module_names'] = {
+    'task': 'fittings.tasks.update_type_name',
+    'schedule': crontab(minute=0, hour=0, day_of_week=1),
+}
+```
 ### 3. Finalize Install
 Run migrations and copy static files. 
 
