@@ -24,35 +24,44 @@ central location for your members to browse.
 ## Key Features
 Fittings offers the following features:
 
-* Support for inputting fittings using the EFT format. 
+* Support for importing fittings using the EFT format. 
   * Support for pulling fits from ESI *Coming Soon*
 * Support for exporting fits as EFT format.
 * Support for saving fits to EVE via ESI.
-* All fits can be copied to the clipboard for ***Buy All***.
+* Support for copying fits for use with ***Buy All***.
 * Categorization of your fittings and doctrines to keep things organized
 and easy to manage.
   * Access to categories can be restricted to specific groups.
-* Periodic update for module names
+* Tracks changes to module names.
 
 ## Screenshots
 
 ### Dashboard/Doctrine List
-![dashboard/doctrine list](https://i.imgur.com/Xk4Eosh.png)
+![dashboard/doctrine list](https://i.imgur.com/AUla6oR.png)
 
 ### Add Fitting
-![add fitting](https://i.imgur.com/loFrtjj.png)
+![add fitting](https://i.imgur.com/09Ht3Zy.png)
 
 ### Fitting List
-![fitting list](https://i.imgur.com/f01q6wI.png)
+![fitting list](https://i.imgur.com/JTyaot7.png)
 
 ### View Fitting
-![view fitting](https://i.imgur.com/JwKKWUF.png)
+![view fitting](https://i.imgur.com/3H2PgXC.png)
 
 ### Add Doctrine
-![add doctrine](https://i.imgur.com/MXkPI3c.png)
+![add doctrine](https://i.imgur.com/WWSJHmb.png)
 
 ### View Doctrine
-![view doctrine](https://i.imgur.com/FzVCb6S.png)
+![view doctrine](https://i.imgur.com/9IJN3jt.png)
+
+### Add a Category
+![add category](https://i.imgur.com/0ytpF66.png)
+
+### View all Categories
+![view all categories](https://i.imgur.com/kRyr34p.png)
+
+### View a Category
+![view category](https://i.imgur.com/hs7DDqp.png)
 
 ## Installation
 ### 1. Install App
@@ -102,6 +111,8 @@ $ python manage.py collectstatic
 ```
 
 Lastly, restart your supervisor tasks.
+
+*Note: Be sure to follow any version specific update instructions as well. These instructions can be found on the `Tags` page for this repository.*
 
 ## Settings
 This application has no settings that need to be added to your allianceauth settings (`local.py`) file.
