@@ -560,6 +560,23 @@ def edit_category(request, cat_id):
 
 @permission_required('fittings.manage')
 @login_required()
+def delete_category(request, cat_id):
+    ctx = {}
+    try:
+        cat = Category.objects.get(pk=cat_id)
+    except:
+        messages.warning(request, "Category could not be found.")
+        return redirect('fittings:dashboard')
+    name = cat.name
+    cat.delete()
+
+    messages.success(request, f'Category "{name}" deleted successfully.')
+
+    return redirect('fittings:dashboard')
+
+
+@permission_required('fittings.manage')
+@login_required()
 def delete_fit(request, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)

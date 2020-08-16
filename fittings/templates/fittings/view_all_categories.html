@@ -48,11 +48,14 @@
                                     <td> {{ cat.doctrines_count }}</td>
                                     <td> {{ cat.total_fits }} </td>
                                     <td>
+                                        <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
+                                            <span class="fa fas fa-eye"></span>
+                                        </a>
                                         <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
                                             <span class="fa fas fa-pencil"></span>
                                         </a>
-                                        <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
-                                            <span class="fa fas fa-eye"></span>
+                                        <a href="{% url 'fittings:delete_category' cat.pk %}" type="button" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Category">
+                                            <span class="fa fas fa-times"></span>
                                         </a>
                                     </td>
                                 </tr>

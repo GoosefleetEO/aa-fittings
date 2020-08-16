@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^cat/add/$', views.add_category, name='add_category'),
     url(r'^cat/(?P<cat_id>[0-9]+)/$', views.view_category, name='view_category'),
     url(r'^cat/(?P<cat_id>[0-9]+)/edit/$', views.edit_category, name='edit_category'),
+    url(r'^cat/(?P<cat_id>[0-9]+)/delete/$', views.delete_category, name='delete_category'),
 ]
