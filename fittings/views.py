@@ -326,7 +326,7 @@ def view_doctrine(request, doctrine_id):
                     cats.append(cat)
                     ids.append(cat.pk)
         categories[fit.pk] = cats
-    del ids
+        del ids
     ctx['f_cats'] = categories
 
     return render(request, 'fittings/view_doctrine.html', context=ctx)
