@@ -11,6 +11,7 @@ install_requires = [
     'django-bootstrap-form',
     'django-model_utils>=3.1.1',
     'django-esi>=2.0.0b1',
+    'django<3.0.0'
 ]
 
 testing_extras = [
