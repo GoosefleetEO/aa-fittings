@@ -52,7 +52,7 @@
                 <hr />
                 <dl>
                     <dt>Description</dt>
-                    <dd>{{ doctrine.description }}</dd>
+                    <dd>{{ doctrine.description|break_html_lines|striptags }}</dd>
                     <dt>Created</dt>
                     <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
                     {% if doctrine.last_updated %}
