@@ -203,6 +203,7 @@ def create_fitting_items(fit, parsed_eft):
     for item in parsed_eft['fighter_bay']:
         create_fitting_item(fit, item)
 
+
 @shared_task
 def update_fit(eft_text, fit_id, description=None):
     parsed_eft = EftParser(eft_text).parse()
@@ -224,6 +225,7 @@ def update_fit(eft_text, fit_id, description=None):
 
     logger.info("Done updating fit " + fit_id)
 
+
 @shared_task
 def missing_group_type_fix():
     logger.info("Started updating groups for preexisting types.")
@@ -239,6 +241,7 @@ def missing_group_type_fix():
         _ = item.result()
 
     logger.info("Done updating groups.")
+
 
 @shared_task
 def update_type_name():
