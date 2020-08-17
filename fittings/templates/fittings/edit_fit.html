@@ -26,16 +26,16 @@
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="iconSelect" class="col-sm-2 control-label">Description</label>
+                                <label for="description" class="col-sm-2 control-label">Description</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="description" id="description" value="{{ fit.description }}" />
+                                    <textarea class="form-control" name="description" id="description" maxlength="500" rows="3">{{ fit.description }}</textarea>
                                 </div>
                             </div>
                             <br />
                             <div class="form-group" >
-                                <label for="iconSelect" class="col-sm-2 control-label">Fit</label>
+                                <label for="eft" class="col-sm-2 control-label">Fit</label>
                                 <div class="col-sm-10" style="margin-top: 5px; margin-bottom: 5px;">
-                                    <textarea class="form-control" name="eft" id="eft" rows="10">{{ fit.eft }}</textarea>
+                                    <textarea class="form-control" name="eft" id="eft" rows="5">{{ fit.eft }}</textarea>
                                 </div>
                             </div>
                             <br />
