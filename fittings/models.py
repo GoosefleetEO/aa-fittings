@@ -54,6 +54,7 @@ class Type(models.Model):
     class Meta:
         default_permissions = ()
 
+
 class TypeHistory(models.Model):
     type_id = models.BigIntegerField()
     type_name = models.CharField(max_length=500)
@@ -196,7 +197,7 @@ class Doctrine(models.Model):
     name = models.CharField(max_length=255, null=False)
     icon_url = models.URLField(null=True)
     fittings = models.ManyToManyField(Fitting, related_name='doctrines')
-    description = models.CharField(max_length=1000)
+    description = models.TextField(max_length=1000)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(null=True)
 
