@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task
 
-from .models import Fitting, FittingItem, Type
+from .models import Fitting, FittingItem, Type, DogmaEffect, DogmaAttribute
 
 logger = get_extension_logger(__name__)
 
@@ -229,6 +229,12 @@ def update_fit(eft_text, fit_id, description=None):
 @shared_task
 def missing_group_type_fix():
     logger.info("Started updating groups for preexisting types.")
+    type_used = FittingItem.objects.order_by('type_id').values_list('type_id', flat=True).distinct()
+    ship_type_used = Fitting.objects.order_by('ship_type_type_id').values_list('ship_type_type_id', flat=True).distinct()
+    joined_type = list(type_used) + list(ship_type_used)
+    da = DogmaAttribute.objects.exclude(type_id__in=joined_type).delete()
+    de = DogmaEffect.objects.exclude(type_id__in=joined_type).delete()
+    Type.objects.exclude(type_id__in=joined_type).delete()
     # Grab all types with a null group field.
     types = Type.objects.filter(group=None)
 
