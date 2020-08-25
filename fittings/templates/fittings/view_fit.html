@@ -52,9 +52,9 @@
                 Fit Information
                 {% if perms.fittings.manage %}
                 <span data-toggle="modal" data-target="#deleteModal">
-                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Delete Fit"><span class="fa fa-times"></span> </button>
+                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Delete Fit"><span class="fa fas fa-times"></span> </button>
                 </span>
-                <a href="{% url 'fittings:edit_fit' fit.pk %}" class="btn btn-xs btn-warning" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Edit/Update Fit"><span class="fa fa-pencil"></span></a>
+                <a href="{% url 'fittings:edit_fit' fit.pk %}" class="btn btn-xs btn-warning" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Edit/Update Fit"><span class="fa fas fa-pencil-alt"></span></a>
                 {% endif %}
             </div>
             <div class="panel-body">
