@@ -93,7 +93,7 @@ def _get_docs_qs(request, groups, **kwargs):
             .filter(
             Q(category__groups__in=groups) |
             Q(category__isnull=True) |
-            Q(category__groups__isnull=True))
+            Q(category__groups__isnull=True)).distinct()
 
     return docs
 
