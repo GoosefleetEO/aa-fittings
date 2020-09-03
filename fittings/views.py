@@ -62,11 +62,11 @@ def _get_public_fits(np=False):
     """
     if np:
         f = Fitting.objects.filter(Q(category__groups__isnull=True) | Q(doctrines__category__groups__isnull=True))\
-            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False))
+            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False)).distinct()
     else:
         f = Fitting.objects.prefetch_related('category', 'doctrines__category', 'ship_type')\
             .filter(Q(category__groups__isnull=True) | Q(doctrines__category__groups__isnull=True))\
-            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False))
+            .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False)).distinct()
     return f
 
 
