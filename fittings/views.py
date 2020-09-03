@@ -92,9 +92,12 @@ def _get_docs_qs(request, groups, **kwargs):
         docs = cls.prefetch_related('category') \
             .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type'))) \
             .filter(
-            Q(category__groups__in=groups) |
-            Q(category__isnull=True) |
-            Q(category__groups__isnull=True)).distinct()
+            Q(category__groups__in=groups))
+        docs = docs.union(
+            cls.prefetch_related('category')
+            .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))
+            .filter(Q(category__isnull=True) | Q(category__groups__isnull=True))
+        ).distinct()
 
     return docs
 
