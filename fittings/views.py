@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Subquery, OuterRef, Count, Q, Prefetch, F
 from django.shortcuts import render, redirect
 from esi.decorators import token_required
+from itertools import chain
 
 from .models import Doctrine, Fitting, Type, FittingItem, Category
 from .providers import esi
@@ -137,10 +138,10 @@ def _build_slots(fit):
 def _check_fit_access(request, fit_id: int) -> bool:
     fit = Fitting.objects.prefetch_related('category', 'doctrines', 'doctrines__category').get(pk=int(fit_id))
     user = request.user
-    a_cats = _get_accessible_categories(user)
-    f_cats = fit.category.all()
+    a_cats = _get_accessible_categories(user)   # Categories that the user has access to
+    f_cats = fit.category.all()    # Categories attached to the fit
     for d in fit.doctrines.all():
-        f_cats = f_cats.union(f_cats, d.category.all())
+        f_cats = chain(f_cats, d.category.all())
     pub = _get_public_fits(True)
     logger.debug(f"Checking user {user.pk} access to fit {fit_id}")
     if user.has_perm('fittings.manage'):
