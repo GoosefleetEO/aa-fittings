@@ -41,18 +41,25 @@ def _get_fits_qs(request, groups, **kwargs):
     if 'obj' in kwargs:
         cls = kwargs['obj'].fittings
         p_fits = Fitting.objects.none()
+
+        # If the obj is a category and is public, we need ot make sure that p_fits contains all the pure public fits for
+        # the category as well as any that are also in restricted categories that the user has access to.
+        if type(kwargs['obj']) is Category and len(kwargs['obj'].groups.all()) == 0:
+            p_fits = cls.filter(Q(category__groups__isnull=True) | Q(doctrines__category__groups__isnull=True))\
+                .exclude(Q(category__groups__isnull=False) | Q(doctrines__category__groups__isnull=False))
     else:
         cls = Fitting.objects
         p_fits = _get_public_fits()
 
+    cls = cls.prefetch_related('category', 'doctrines__category', 'ship_type')
+
     if request.user.has_perm('fittings.manage'):
-        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type').all()
+        fits = cls.all()
     else:
         cats = _get_accessible_categories(request.user)
-        fits = cls.prefetch_related('category', 'doctrines__category', 'ship_type')\
-            .filter(Q(Q(category__in=cats) | Q(doctrines__category__in=cats))).distinct()
+        fits = cls.filter(Q(Q(category__in=cats) | Q(doctrines__category__in=cats)))
         fits = p_fits.union(fits)
-    return fits
+    return fits.distinct()
 
 
 def _get_public_fits(np=False):
