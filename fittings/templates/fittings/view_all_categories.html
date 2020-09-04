@@ -28,10 +28,12 @@
                 <table class="table table-hover dataTable" id="fitTable">
                     <thead>
                         <th>Name</th>
-                        <th>Groups Assigned</th>
                         <th>Doctrines Assigned</th>
                         <th>Fittings Assigned</th>
+                        {% if perms.fittings.manage %}
+                        <th>Groups Assigned</th>
                         <th> </th>
+                        {% endif %}
                     </thead>
                     <tbody>
                         {% if not cats %}
@@ -44,9 +46,10 @@
                             {% for cat in cats %}
                                 <tr>
                                     <td> <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span> </td>
-                                    <td> {{ cat.groups_count }}</td>
                                     <td> {{ cat.doctrines_count }}</td>
                                     <td> {{ cat.total_fits }} </td>
+                                    {% if perms.fittings.manage %}
+                                    <td> {{ cat.groups_count }}</td>
                                     <td>
                                         <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
                                             <span class="fa fas fa-eye"></span>
@@ -58,6 +61,7 @@
                                             <span class="fa fas fa-times"></span>
                                         </a>
                                     </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         {% endif %}

@@ -18,13 +18,18 @@ logger = get_extension_logger(__name__)
 def _get_accessible_categories(user):
     """
     Returns categories that the user has access to.
-    :param user:
+    :param user: a User object.
     :return:
     """
     groups = user.groups.all().prefetch_related('access_restricted_category')
     cats = Category.objects.none()
     for group in groups:
-        cats = cats.union(group.access_restricted_category.all())
+        cats = cats.union(group.access_restricted_category.all()\
+            .annotate(groups_count=Count('groups', distinct=True))\
+            .annotate(doctrines_count=Count('doctrines', distinct=True))\
+            .annotate(fittings_count=Count('fittings', distinct=True))\
+            .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
+            .annotate(total_fits=F('fittings_count')+F('d_fittings_count')))
     return tuple(cats.distinct())
 
 
@@ -422,17 +427,21 @@ def delete_doctrine(request, doctrine_id):
     return redirect('fittings:dashboard')
 
 
-@permission_required('fittings.manage')
+@permission_required('fittings.access_fittings')
 @login_required()
 def view_all_categories(request):
     ctx = {}
-    cats = Category.objects\
-        .all()\
-        .annotate(groups_count=Count('groups', distinct=True))\
-        .annotate(doctrines_count=Count('doctrines', distinct=True))\
-        .annotate(fittings_count=Count('fittings', distinct=True))\
-        .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
-        .annotate(total_fits=F('fittings_count')+F('d_fittings_count'))
+    if request.user.has_perm('fittings.manage'):
+        cats = Category.objects\
+            .all()\
+            .annotate(groups_count=Count('groups', distinct=True))\
+            .annotate(doctrines_count=Count('doctrines', distinct=True))\
+            .annotate(fittings_count=Count('fittings', distinct=True))\
+            .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
+            .annotate(total_fits=F('fittings_count')+F('d_fittings_count'))
+    else:
+        cats = _get_accessible_categories(request.user)
+        logger.critical(cats)
     for cat in cats:
         logger.debug(f'{cat.name}: Groups {cat.groups_count}')
     ctx['cats'] = cats
