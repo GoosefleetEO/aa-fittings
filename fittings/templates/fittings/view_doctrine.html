@@ -87,7 +87,7 @@
                                     <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
                                     <td>
                                         {% for cat in f_cats|get_item:fit.pk %}
-                                            <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
+                                        <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
                                         {% endfor %}
                                     </td>
                                     <td> {{ fit.description }} </td>
