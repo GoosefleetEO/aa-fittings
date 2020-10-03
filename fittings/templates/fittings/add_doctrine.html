@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load filters %}
 {% load static %}
+{% load evelinks %}
 
 {% block more_css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.min.css" />
@@ -68,7 +69,7 @@
                                 <div class="col-sm-10">
                                     <select class="form-control" name="iconSelect" id="iconSelect" aria-describedby="helpBlock">
                                         {% for ship in ships %}
-                                            <option value="https://imageserver.eveonline.com/Type/{{ship.ship_type}}_64.png">{{ship.ship_type__type_name}}</option>
+                                            <option value="{{ ship.ship_type|type_render_url:64 }}">{{ship.ship_type__type_name}}</option>
                                         {% endfor %}
                                     </select>
                                     <span id="helpBlock" class="help-block"> If you do not see the ship type that you would like to use for the icon, add a fit that uses that ship type and try again.</span>
