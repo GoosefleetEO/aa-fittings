@@ -7,11 +7,10 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires = [
-    'allianceauth>=2.0.5',
+    'allianceauth>=2.6.4',
     'django-bootstrap-form',
     'django-model_utils>=3.1.1',
-    'django-esi>=2.0.0b1',
-    'django<3.0.0'
+    'django-esi>=2.0.0'
 ]
 
 testing_extras = [
@@ -29,15 +28,16 @@ setup(
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
-        ':python_version=="3.4"': ['typing'],
+        ':python_version=="3.6"': ['typing'],
     },
-    python_requires='~=3.4',
+    python_requires='~=3.6',
     license='GPLv3',
     packages=find_packages(),
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
