@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load filters %}
 {% load static %}
+{% load evelinks %}
 
 {% block more_css %}
     <style>
@@ -94,7 +95,7 @@
                                             <td> {{ doc.description }} </td>
                                             <td>
                                                 {% for fitting in doc_dict|get_item:doc.pk %}
-                                                    <img src="https://imageserver.eveonline.com/Type/{{ fitting.ship_type_type_id }}_64.png" class="img-circle" style="height: 32px; width: 32px;" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
+                                                    <img src="{{ fitting.ship_type_type_id|type_render_url:64 }}" class="img-circle" style="height: 32px; width: 32px;" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
                                                 {% endfor %}
                                             </td>
                                         </tr>
@@ -128,7 +129,7 @@
                                                 {% endfor %}
                                             </td>
                                             <td> {{ fit.description }} </td>
-                                            <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }} </td>
+                                            <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:128 }}" style="height: 32px; width: 32px;" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }}</td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}

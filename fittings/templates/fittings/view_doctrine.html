@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load filters %}
 {% load static %}
+{% load evelinks %}
 
 {% block page_title %}{{ doctrine.name }} {% trans "Doctrine" %}{% endblock %}
 
@@ -91,7 +92,7 @@
                                         {% endfor %}
                                     </td>
                                     <td> {{ fit.description }} </td>
-                                    <td> {% item_img_circle fit.ship_type_type_id fit.ship_type.type_name '32' %} {{ fit.ship_type.type_name }}</td>
+                                    <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:128 }}" style="height: 32px; width: 32px;" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }}</td>
                                 </tr>
                             {% endfor %}
                         {% endif %}

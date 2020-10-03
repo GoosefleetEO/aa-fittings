@@ -6,19 +6,6 @@ from django.utils.safestring import mark_safe
 def get_item(dict_, key):
     return dict_.get(key)
 
-
-@register.simple_tag()
-def item_img_circle(_id, name, size):
-    return mark_safe('<img class="img-circle" src="https://imageserver.eveonline.com/Type/%s_128.png"'
-                     ' style="height: %spx; width: %spx;" title="%s">' % (_id, size, size, name))
-
-
-@register.simple_tag()
-def item_img(_id, name, size):
-    return mark_safe('<img src="https://imageserver.eveonline.com/Type/%s_128.png"'
-                     ' style="height: %spx; width: %spx;" title="%s">' % (_id, size, size, name))
-
-
 @register.filter(name='empty_slots')
 def empty_slots(fittings: dict, slot_type: str):
     keys = fittings.keys()
