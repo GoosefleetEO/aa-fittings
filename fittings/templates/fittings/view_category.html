@@ -95,7 +95,7 @@
                                             <td> {{ doc.description }} </td>
                                             <td>
                                                 {% for fitting in doc_dict|get_item:doc.pk %}
-                                                    <img src="{{ fitting.ship_type_type_id|type_render_url:64 }}" class="img-circle" style="height: 32px; width: 32px;" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
+                                                    <img src="{{ fitting.ship_type_type_id|type_render_url:32 }}" class="img-circle" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
                                                 {% endfor %}
                                             </td>
                                         </tr>
