@@ -148,7 +148,9 @@
 
 {% block extra_script %}
     $(document).ready(function(){
-        $('#docTable').DataTable();
+        $('#docTable').DataTable({
+            "order": [[ 1, "asc" ]],
+        });
         $('[data-toggle="tooltip"]').tooltip();
         $('#fitTable').DataTable();
         $('[data-toggle="tooltip"]').tooltip();
