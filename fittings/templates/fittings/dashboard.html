@@ -25,22 +25,18 @@
                 Doctrines
             </div>
             <div class="panel-body">
-                <table class="table table-hover dataTable" id="docTable">
-                    <thead>
-                        <th> </th>
-                        <th>Name</th>
-                        <th>Categories</th>
-                        <th>Description</th>
-                        <th>Ships</th>
-                    </thead>
-                    <tbody>
-                        {% if not docs %}
-                            <tr>
-                                <td colspan="5">
-                                    <div class="alert alert-warning" style="text-align: center"> No Doctrines Found </div>
-                                </td>
-                            </tr>
-                        {% else %}
+                {% if not docs %}
+                    <div class="alert alert-warning" style="text-align: center"> No Doctrines Found </div>
+                {% else %}
+                    <table class="table table-hover dataTable" id="docTable">
+                        <thead>
+                            <th> </th>
+                            <th>Name</th>
+                            <th>Categories</th>
+                            <th>Description</th>
+                            <th>Ships</th>
+                        </thead>
+                        <tbody>
                             {% for doc in docs %}
                                 <tr>
                                     <td> <a href="{% url 'fittings:view_doctrine' doc.pk %}"><img src="{{ doc.icon_url }}" class="img-circle" style="display: block; margin: auto;"/> </a></td>
@@ -58,9 +54,9 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>
