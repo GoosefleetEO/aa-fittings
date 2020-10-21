@@ -2,6 +2,7 @@ from allianceauth.services.hooks import get_extension_logger
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.translation import gettext as gt
 from django.db.models import Subquery, OuterRef, Count, Q, Prefetch, F
 from django.shortcuts import render, redirect
 from esi.decorators import token_required
@@ -210,7 +211,7 @@ def edit_fit(request, fit_id):
         fit = Fitting.objects.get(pk=fit_id)
         
     except Fitting.DoesNotExist:
-        messages.warning(request, 'Fit not found!')
+        messages.warning(request, gt('Fit not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -233,7 +234,7 @@ def view_fit(request, fit_id):
     try:
         fit = Fitting.objects.prefetch_related('category', 'doctrines', 'doctrines__category').get(pk=fit_id)
     except Fitting.DoesNotExist:
-        messages.warning(request, 'Fit not found!')
+        messages.warning(request, gt('Fit not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -241,7 +242,7 @@ def view_fit(request, fit_id):
     access = _check_fit_access(request, fit_id)
 
     if not access:
-        messages.warning(request, 'You do not have access to that fit.')
+        messages.warning(request, gt('You do not have access to that fit.'))
 
         return redirect('fittings:dashboard')
 
@@ -319,7 +320,7 @@ def view_doctrine(request, doctrine_id):
             .prefetch_related('fittings__doctrines')\
             .prefetch_related('fittings__doctrines__category').get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
-        messages.warning(request, 'Doctrine not found!')
+        messages.warning(request, gt('Doctrine not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -382,7 +383,7 @@ def edit_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExits:
-        messages.warning(request, 'Doctrine not found!')
+        messages.warning(request, gt('Doctrine not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -418,7 +419,7 @@ def delete_doctrine(request, doctrine_id):
     try:
         doctrine = Doctrine.objects.get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
-        messages.warning(request, 'Doctrine not found!')
+        messages.warning(request, gt('Doctrine not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -469,7 +470,7 @@ def add_category(request):
         for group in groupSelect:
             cat.groups.add(group)
 
-        messages.success(request, "Category successfully created!")
+        messages.success(request, gt("Category successfully created!"))
         return redirect('fittings:view_category', cat.pk)
     fits = Fitting.objects.all()
     docs = Doctrine.objects.all()
@@ -493,7 +494,7 @@ def view_category(request, cat_id):
             .get(pk=cat_id)
         ctx['cat'] = cat
     except Exception as e:
-        messages.warning(request, "Category not found!")
+        messages.warning(request, gt("Category not found!"))
         return redirect("fittings:dashboard")
 
     # Get Docs and fittings
@@ -545,7 +546,7 @@ def edit_category(request, cat_id):
             .get(pk=cat_id)
         ctx['cat'] = cat
     except Exception as e:
-        messages.warning(request, "Category not found!")
+        messages.warning(request, gt("Category not found!"))
         return redirect("fittings:dashboard")
 
     if request.method == "POST":
@@ -559,12 +560,12 @@ def edit_category(request, cat_id):
 
         cat.name = name
         cat.color = color
-        cat.save(update_fields=['name','color'])
+        cat.save(update_fields=['name', 'color'])
         cat.doctrines.set(docSelect)
         cat.fittings.set(fitSelect)
         cat.groups.set(groupSelect)
 
-        messages.success(request, "Category successfully edited!")
+        messages.success(request, gt("Category successfully edited!"))
         return redirect('fittings:view_category', cat.pk)
 
     groups = Group.objects.all()
@@ -585,12 +586,12 @@ def delete_category(request, cat_id):
     try:
         cat = Category.objects.get(pk=cat_id)
     except:
-        messages.warning(request, "Category could not be found.")
+        messages.warning(request, gt("Category could not be found."))
         return redirect('fittings:dashboard')
     name = cat.name
     cat.delete()
 
-    messages.success(request, f'Category "{name}" deleted successfully.')
+    messages.success(request, gt(f'Category "{name}" deleted successfully.'))
 
     return redirect('fittings:dashboard')
 
@@ -601,7 +602,7 @@ def delete_fit(request, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
     except Doctrine.DoesNotExist:
-        messages.warning(request, 'Fit not found!')
+        messages.warning(request, gt('Fit not found!'))
 
         return redirect('fittings:dashboard')
 
@@ -617,13 +618,13 @@ def save_fit(request, token, fit_id):
     try:
         fit = Fitting.objects.get(pk=fit_id)
     except Fitting.DoesNotExist:
-        messages.warning(request, 'Fit not found!')
+        messages.warning(request, gt('Fit not found!'))
 
         return redirect('fitting:dashboard')
 
     access = _check_fit_access(request, fit_id)
     if not access:
-        messages.warning(request, 'You do not have access to that fit.')
+        messages.warning(request, gt('You do not have access to that fit.'))
 
         return redirect('fittings:dashboard')
 
