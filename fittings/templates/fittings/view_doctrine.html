@@ -37,7 +37,7 @@
                 {% translate "Doctrine Information" %}
                 {% if perms.fittings.manage %}
                     <span data-toggle="modal" data-target="#deleteModal">
-                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Delete Doctrine"><span class="fa fas fa-times"></span> </button>
+                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="{% translate 'Delete Doctrine' %}"><span class="fa fas fa-times"></span> </button>
                     </span>
                     <a href="{% url 'fittings:edit_doctrine' doctrine.pk %}" class="btn btn-xs btn-warning" style="float: right" data-toggle="tooltip" data-placement="top" title="{% translate 'Edit Doctrine' %}"><span class="fa fas fa-pencil-alt"></span> </a>
                 {% endif %}
