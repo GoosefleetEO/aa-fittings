@@ -4,7 +4,7 @@
 {% load filters %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "View All Fits" %}{% endblock %}
+{% block page_title %}{% translate "View All Fits" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -18,25 +18,25 @@
         {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Fit List
+            {% translate "Fit List" %}
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
-                Fits
+                {% translate "Fits" %}
             </div>
             <div class="panel-body">
                 <table class="table table-hover dataTable" id="fitTable">
                     <thead>
-                        <th>Name</th>
-                        <th>Categories</th>
-                        <th>Description</th>
-                        <th>Ship Type</th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Categories" %}</th>
+                        <th>{% translate "Description" %}</th>
+                        <th>{% translate "Ship Type" %}</th>
                     </thead>
                     <tbody>
                         {% if not fits %}
                             <tr>
                                 <td colspan="4">
-                                    <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %} </div>
                                 </td>
                             </tr>
                         {% else %}
