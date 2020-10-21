@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load filters %}
 
-{% block page_title %}{% trans "Update Fit" %}{% endblock %}
+{% block page_title %}{% translate "Update Fitting" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -18,7 +18,7 @@
     <div class="container col-sm-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Update Fitting
+                {% translate "Update Fitting" %}
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -26,20 +26,20 @@
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="description" class="col-sm-2 control-label">Description</label>
+                                <label for="description" class="col-sm-2 control-label">{% translate "Description" %}</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" name="description" id="description" maxlength="500" rows="3">{{ fit.description }}</textarea>
                                 </div>
                             </div>
                             <br />
                             <div class="form-group" >
-                                <label for="eft" class="col-sm-2 control-label">Fit</label>
+                                <label for="eft" class="col-sm-2 control-label">{% translate "Fit" %}</label>
                                 <div class="col-sm-10" style="margin-top: 5px; margin-bottom: 5px;">
                                     <textarea class="form-control" name="eft" id="eft" rows="5">{{ fit.eft }}</textarea>
                                 </div>
                             </div>
                             <br />
-                            <button class="btn btn-primary btn-block" type="submit">Submit</button>
+                            <button class="btn btn-primary btn-block" type="submit">{% translate "Submit" %}</button>
                         </form>
                     </div>
                 </div>
