@@ -4,7 +4,7 @@
 {% load filters %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "View All Fits" %}{% endblock %}
+{% block page_title %}{% translate "View All Fits" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -12,28 +12,36 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    {% if msg.0 != 'warning' %}
+                        <h4>
+                            {% if msg.0 == 'danger' %}
+                                {% translate "Oh No!" %}
+                            {% elif msg.0 == 'success' %}
+                                {% translate "Success!" %}
+                            {% endif %}
+                        </h4>
+                    {% endif %}
                     <p>{{ msg.1 }}</p>
                 </div>
         {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Fit List
+            {% translate "Fit List" %}
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
-                Fits
+                {% translate "Fits" %}
             </div>
             <div class="panel-body">
                 {% if not fits %}
-                    <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %}</div>
                 {% else %}
                     <table class="table table-hover dataTable" id="fitTable">
                         <thead>
-                            <th>Name</th>
-                            <th>Categories</th>
-                            <th>Description</th>
-                            <th>Ship Type</th>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Categories" %}</th>
+                            <th>{% translate "Description" %}</th>
+                            <th>{% translate "Ship Type" %}</th>
                         </thead>
                         <tbody>
                             {% for fit in fits %}

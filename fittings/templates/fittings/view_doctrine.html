@@ -5,7 +5,7 @@
 {% load static %}
 {% load evelinks %}
 
-{% block page_title %}{{ doctrine.name }} {% trans "Doctrine" %}{% endblock %}
+{% block page_title %}{{ doctrine.name }} {% translate "Doctrine" %}{% endblock %}
 
 {% block fittings_block %}
     {# modal start #}
@@ -14,16 +14,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modalTitle">Are you sure?</h4>
+                    <h4 class="modal-title" id="modalTitle">{% translate "Are you sure?" %}</h4>
                 </div>
                 <div class="modal-body">
-                    <p style="white-space: pre-line">Are you sure you wish to delete this doctrine?
-
-                        <i><strong>This action is permanent.</strong></i></p>
+                    <p style="white-space: pre-line">
+                        {% translate "Are you sure you wish to delete this doctrine?" %}
+                        <i><strong>{% translate "This action is permanent." %}</strong></i>
+                    </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No - Close</button>
-                    <a href="{% url 'fittings:delete_doctrine' doctrine.pk %}" type="button" class="btn btn-danger">Yes - Delete</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{% translate "No - Close" %}</button>
+                    <a href="{% url 'fittings:delete_doctrine' doctrine.pk %}" type="button" class="btn btn-danger">{% translate "Yes - Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -34,12 +35,13 @@
     <div class="col-md-3">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Doctrine Information
+                {% translate "Doctrine Information" %}
+
                 {% if perms.fittings.manage %}
                     <span data-toggle="modal" data-target="#deleteModal">
-                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="Delete Doctrine"><span class="fa fas fa-times"></span> </button>
+                        <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="{% translate 'Delete Doctrine' %}"><span class="fa fas fa-times"></span> </button>
                     </span>
-                    <a href="{% url 'fittings:edit_doctrine' doctrine.pk %}" class="btn btn-xs btn-warning" style="float: right" data-toggle="tooltip" data-placement="top" title="Edit Doctrine"><span class="fa fas fa-pencil-alt"></span> </a>
+                    <a href="{% url 'fittings:edit_doctrine' doctrine.pk %}" class="btn btn-xs btn-warning" style="float: right" data-toggle="tooltip" data-placement="top" title="{% translate 'Edit Doctrine' %}"><span class="fa fas fa-pencil-alt"></span> </a>
                 {% endif %}
             </div>
             <div class="panel-body">
@@ -52,12 +54,12 @@
                 </h5>
                 <hr />
                 <dl>
-                    <dt>Description</dt>
+                    <dt>{% translate "Description" %}</dt>
                     <dd>{{ doctrine.description|break_html_lines|striptags }}</dd>
-                    <dt>Created</dt>
+                    <dt>{% translate "Created" %}</dt>
                     <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
                     {% if doctrine.last_updated %}
-                        <dt>Last Updated</dt>
+                        <dt>{% translate "Last Updated" %}</dt>
                         <dd>{{ doctrine.last_updated|date:'d M Y H:i:s' }}</dd>
                     {% endif %}
                 </dl>
@@ -66,17 +68,17 @@
     </div>
     <div class="col-md-9">
         <div class="panel panel-default">
-            <div class="panel-heading">Doctrine Fits</div>
+            <div class="panel-heading">{% translate "Doctrine Fits" %}</div>
             <div class="panel-body">
                 {% if not fits %}
-                    <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %}</div>
                 {% else %}
                     <table class="table table-hover dataTable" id="fitsTable">
                         <thead>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Ship Type</th>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Category" %}</th>
+                            <th>{% translate "Description" %}</th>
+                            <th>{% translate "Ship Type" %}</th>
                         </thead>
                         <tbody>
                                 {% for fit in fits %}

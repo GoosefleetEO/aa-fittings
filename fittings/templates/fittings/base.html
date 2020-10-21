@@ -34,16 +34,16 @@
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                            <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                            <span class="sr-only">{% translate "Toggle navigation" %}</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="{% url 'fittings:dashboard' %}">{% trans "Fittings and Doctrines" %}</a>
+                        <a class="navbar-brand" href="{% url 'fittings:dashboard' %}">{% translate "Fittings and Doctrines" %}</a>
                     </div>
                     <ul class="nav navbar-nav navbar-left">
-                            <li> <a href="{% url 'fittings:view_all_fits' %}">View All Fits</a></li>
-                            <li><a href="{% url 'fittings:view_all_categories' %}">View All Categories</a></li>
+                            <li> <a href="{% url 'fittings:view_all_fits' %}">{% translate "View All Fits" %}</a></li>
+                            <li><a href="{% url 'fittings:view_all_categories' %}">{% translate "View All Categories" %}</a></li>
                     </ul>
                     {% if perms.fittings.manage %}
                         <div class="dropdown pull-right" style="margin-top: .8em;">
@@ -51,9 +51,9 @@
                                 <span class="fa fa-plus"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="manageDrop">
-                                <li> <a href="{% url 'fittings:add_fit' %}">Fitting</a></li>
-                                <li> <a href="{% url 'fittings:add_doctrine' %}">Doctrine</a></li>
-                                <li> <a href="{% url 'fittings:add_category' %}">Category</a></li>
+                                <li> <a href="{% url 'fittings:add_fit' %}">{% translate "Fitting" %}</a></li>
+                                <li> <a href="{% url 'fittings:add_doctrine' %}">{% translate "Doctrine" %}</a></li>
+                                <li> <a href="{% url 'fittings:add_category' %}">{% translate "Category" %}</a></li>
                             </ul>
                         </div>
                     {% endif %}

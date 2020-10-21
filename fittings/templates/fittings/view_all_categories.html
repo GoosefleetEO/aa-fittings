@@ -4,37 +4,43 @@
 {% load filters %}
 
 
-{% block page_title %}{% trans "View All Categories" %}{% endblock %}
+{% block page_title %}{% translate "View All Categories" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
-                    <p>{{ msg.1 }}</p>
-                </div>
-        {% endif %}
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>
+                    {% if msg.0 == 'danger' %}
+                        {% translate "Oh No!" %}
+                    {% elif msg.0 == 'success' %}
+                        {% translate "Success!" %}
+                    {% endif %}
+                </h4>
+                <p>{{ msg.1 }}</p>
+            </div>
+    {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Category List
+            {% translate "Category List" %}
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
-                Fits
+                {% translate "Fits" %}
             </div>
             <div class="panel-body">
                 {% if not cats %}
-                    <div class="alert alert-warning" style="text-align: center"> No Categories Found </div>
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Categories Found" %}</div>
                 {% else %}
                     <table class="table table-hover dataTable" id="fitTable">
                         <thead>
-                            <th>Name</th>
-                            <th>Doctrines Assigned</th>
-                            <th>Fittings Assigned</th>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Doctrines Assigned" %}</th>
+                            <th>{% translate "Fittings Assigned" %}</th>
                             {% if perms.fittings.manage %}
-                                <th>Groups Assigned</th>
+                                <th>{% translate "Groups Assigned" %}</th>
                                 <th> </th>
                             {% endif %}
                         </thead>
@@ -47,13 +53,13 @@
                                     {% if perms.fittings.manage %}
                                         <td> {{ cat.groups_count }}</td>
                                         <td>
-                                            <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="View Category">
+                                            <a href="{% url 'fittings:view_category' cat.pk %}" type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="{% translate 'View Category' %}">
                                                 <span class="fa fas fa-eye"></span>
                                             </a>
-                                            <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                                            <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="{% translate 'Edit Category' %}">
                                                 <span class="fa fas fa-pencil-alt"></span>
                                             </a>
-                                            <a href="{% url 'fittings:delete_category' cat.pk %}" type="button" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Category">
+                                            <a href="{% url 'fittings:delete_category' cat.pk %}" type="button" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="{% translate 'Delete Category' %}">
                                                 <span class="fa fas fa-times"></span>
                                             </a>
                                         </td>
@@ -62,7 +68,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <h6><i><i class="fas fa-exclamation-triangle"></i>*Note: Fit counts may be inaccurate as fits marked independently of doctrines may be counted more than once.</i></h6>
+                    <h6><i><i class="fas fa-exclamation-triangle"></i>{% translate "*Note: Fit counts may be inaccurate as fits marked independently of doctrines may be counted more than once." %}</i></h6>
                 {% endif %}
             </div>
         </div>

@@ -26,60 +26,60 @@
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
 
-{% block page_title %}{% trans "View Category" %}{% endblock %}
+{% block page_title %}{% translate "View Category" %}{% endblock %}
 
 {% block fittings_block %}
     <div class="container col-sm-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Category
+                {% translate "Category" %}
                 {% if perms.fittings.manage %}
                 <div class="pull-right" style="margin-top: -2px !important;">
-                   <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Category">
+                   <a href="{% url 'fittings:edit_category' cat.pk %}" type="button" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="{% translate 'Edit Category' %}">
                        <span class="fa fas fa-pencil-alt"></span>
                    </a>
-                    <a href="{% url 'fittings:delete_category' cat.pk %}" type="button" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Category">
+                    <a href="{% url 'fittings:delete_category' cat.pk %}" type="button" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="{% translate 'Delete Category' %}">
                         <span class="fa fas fa-times"></span>
                     </a>
                 </div>
                 {% endif %}
             </div>
             <div class="panel-body tp">
-                <strong>Name: </strong>
+                <strong>{% translate "Name" %}: </strong>
                 <br/>
                 <span class="label" style="background-color: {{cat.color}}">{{cat.name}}</span>
                 <div id="spacer" style="padding-top: 5px;"></div>
                 {% if perms.fittings.manage %}
-                    <strong>Groups: </strong>
+                    <strong>{% translate "Groups" %}: </strong>
                     <br />
                     {% if cat.groups.all|length != 0 %}
                       {% for group in cat.groups.all %} <span class="label label-primary">{{group.name}}</span> {% endfor %}
                     {% else %}
-                      <span class="label label-warning">Category is public</span>
+                      <span class="label label-warning">{% translate "Category is public" %}</span>
                     {% endif %}
                 {% endif %}
 
             </div>
             <div class="panel-body btm">
                 <ul class="nav nav-tabs" style="margin-bottom: 10px;">
-                    <li class="active mv"><a data-toggle="tab" href="#doctrines">Doctrines</a></li>
-                    <li><a data-toggle="tab" href="#fittings">Fittings</a></li>
+                    <li class="active mv"><a data-toggle="tab" href="#doctrines">{% translate "Doctrines" %}</a></li>
+                    <li><a data-toggle="tab" href="#fittings">{% translate "Fittings" %}</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade-in active panel-default pd" id="doctrines">
                         <table class="table table-striped dataTable" role="table" id="docTable">
                             <thead>
                                 <th> </th>
-                                <th>Name</th>
-                                <th>Categories</th>
-                                <th>Description</th>
-                                <th>Ships</th>
+                                <th>{% translate "Name" %}</th>
+                                <th>{% translate "Categories" %}</th>
+                                <th>{% translate "Description" %}</th>
+                                <th>{% translate "Ships" %}</th>
                             </thead>
                             <tbody>
                                 {% if not docs %}
                                     <tr>
                                         <td colspan="5">
-                                            <div class="alert alert-warning" style="text-align: center"> No Doctrines Found </div>
+                                            <div class="alert alert-warning" style="text-align: center"> {% translate "No Doctrines Found" %} </div>
                                         </td>
                                     </tr>
                                 {% else %}
@@ -107,16 +107,16 @@
                     <div class="tab-pane fade-in panel-default pd" id="fittings">
                         <table class="table table-hover dataTable" id="fitTable">
                             <thead>
-                                <th>Name</th>
-                                <th>Categories</th>
-                                <th>Description</th>
-                                <th>Ship Type</th>
+                                <th>{% translate "Name" %}</th>
+                                <th>{% translate "Categories" %}</th>
+                                <th>{% translate "Description" %}</th>
+                                <th>{% translate "Ship Type" %}</th>
                             </thead>
                             <tbody>
                                 {% if not fits %}
                                     <tr>
                                         <td colspan="4">
-                                            <div class="alert alert-warning" style="text-align: center"> No Fits Found </div>
+                                            <div class="alert alert-warning" style="text-align: center"> {% translate "No Fits Found" %} </div>
                                         </td>
                                     </tr>
                                 {% else %}
