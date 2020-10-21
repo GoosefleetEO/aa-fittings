@@ -4,7 +4,7 @@
 {% load filters %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "Dashboard" %}{% endblock %}
+{% block page_title %}{% translate "Dashboard" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -18,26 +18,26 @@
     {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Doctrine List
+            {% translate "Doctrine List" %}
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
-                Doctrines
+                {% translate "Doctrines" %}
             </div>
             <div class="panel-body">
                 <table class="table table-hover dataTable" id="docTable">
                     <thead>
                         <th> </th>
-                        <th>Name</th>
-                        <th>Categories</th>
-                        <th>Description</th>
-                        <th>Ships</th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Categories" %}</th>
+                        <th>{% translate "Description" %}</th>
+                        <th>{% translate "Ships" %}</th>
                     </thead>
                     <tbody>
                         {% if not docs %}
                             <tr>
                                 <td colspan="5">
-                                    <div class="alert alert-warning" style="text-align: center"> No Doctrines Found </div>
+                                    <div class="alert alert-warning" style="text-align: center">{% translate "No Doctrines Found" %} </div>
                                 </td>
                             </tr>
                         {% else %}
