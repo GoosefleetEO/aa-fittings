@@ -4,7 +4,7 @@
 {% load filters %}
 
 
-{% block page_title %}{% trans "View All Categories" %}{% endblock %}
+{% block page_title %}{% translate "View All Categories" %}{% endblock %}
 
 {% block fittings_block %}
     {% if msg %}
@@ -18,20 +18,20 @@
         {% endif %}
     <div class="container col-sm-12">
         <h2>
-            Category List
+            {% translate "Category List" %}
         </h2>
         <div class="panel panel-default">
             <div class="panel-heading">
-                Fits
+                {% translate "Fits" %}
             </div>
             <div class="panel-body">
                 <table class="table table-hover dataTable" id="fitTable">
                     <thead>
-                        <th>Name</th>
-                        <th>Doctrines Assigned</th>
-                        <th>Fittings Assigned</th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Doctrines Assigned" %}</th>
+                        <th>{% translate "Fittings Assigned" %}</th>
                         {% if perms.fittings.manage %}
-                        <th>Groups Assigned</th>
+                        <th>{% translate "Groups Assigned" %}</th>
                         <th> </th>
                         {% endif %}
                     </thead>
@@ -39,7 +39,7 @@
                         {% if not cats %}
                             <tr>
                                 <td colspan="4">
-                                    <div class="alert alert-warning" style="text-align: center"> No Categories Found </div>
+                                    <div class="alert alert-warning" style="text-align: center"> {% translate "No Categories Found" %} </div>
                                 </td>
                             </tr>
                         {% else %}
@@ -67,7 +67,7 @@
                         {% endif %}
                     </tbody>
                 </table>
-                <h6><i><i class="fas fa-exclamation-triangle"></i>*Note: Fit counts may be inaccurate as fits marked independently of doctrines may be counted more than once.</i></h6>
+                <h6><i><i class="fas fa-exclamation-triangle"></i>{% translate "*Note: Fit counts may be inaccurate as fits marked independently of doctrines may be counted more than once." %}</i></h6>
             </div>
         </div>
     </div>
