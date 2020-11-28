@@ -11,10 +11,13 @@ logger = get_extension_logger(__name__)
 class EftParser:
     def __init__(self, eft_text):
         self.eft_lines = eft_text.strip().splitlines()
-
-    def parse(self):
+    
+    def parse(self):  
+        # Remove /OFFLINE mentions due to pyfa when an offlined module is exported
+        # Add fitting notes that the module is offlined
+        parsed_fitting_notes = _removeOfflinedModulesMention(self.eft_lines)
         sections = []
-        for section in _importSectionIter(self.eft_lines):
+        for section in _importSectionIter(parsed_fitting_notes['eft_lines']):
             sections.append(section)
 
         modules = []
@@ -25,7 +28,7 @@ class EftParser:
         fit_name = ''
         counter = 0  # Slot flag number
         last_line = ''
-
+        
         for section in sections:
             counter = 0;
             if section.isDroneBay():
@@ -63,7 +66,7 @@ class EftParser:
                     counter += 1
 
         return {'ship': ship_type, 'name': fit_name, 'modules': modules, 'cargo': cargo, 'drone_bay': drone_bay,
-                'fighter_bay': fighter_bay}
+                'fighter_bay': fighter_bay, 'fitting_notes': parsed_fitting_notes['fitting_notes']}
 
 
 def _importSectionIter(lines):
@@ -78,6 +81,25 @@ def _importSectionIter(lines):
     if section.lines:
         yield section
 
+def _removeOfflinedModulesMention(lines):
+    fitting_notes = ''
+    eft_lines = []
+    for line in lines:
+        if '/OFFLINE' in line:
+            line = line.replace(' /OFFLINE', '')
+            if ',' in line:
+                item_name = line.split(',')[0].strip()
+                fitting_notes += '{} is offlined \n'.format(item_name)
+            else:
+                quantity = line.split()[-1]
+                if 'x' in quantity and quantity[1:].isdigit():
+                    item_name = line.split(quantity)[0].strip()
+                    fitting_notes += '{} is offlined \n'.format(item_name)
+                else:
+                    item_name = line.strip()
+                    fitting_notes += '{} is offlined \n'.format(item_name)
+        eft_lines.append(line)
+    return {'fitting_notes': fitting_notes, 'eft_lines': eft_lines}
 
 class Section:    
     def __init__(self):
@@ -153,6 +175,10 @@ def create_fitting_item(fit, item):
 @shared_task
 def create_fit(eft_text, description=None):
     parsed_eft = EftParser(eft_text).parse()
+    if description is None or len(description) == 0:
+        description += '{}'.format(parsed_eft['fitting_notes'])
+    else:
+        description += '\n {}'.format(parsed_eft['fitting_notes'])
 
     logger.info("Creating fit.")
     logger.debug(f"Fit name: {parsed_eft['name']}, Type: {parsed_eft['ship']}")
