@@ -12,7 +12,15 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    {% if msg.0 != 'warning' %}
+                        <h4>
+                            {% if msg.0 == 'danger' %}
+                                {% translate "Oh No!" %}
+                            {% elif msg.0 == 'success' %}
+                                {% translate "Success!" %}
+                            {% endif %}
+                        </h4>
+                    {% endif %}
                     <p>{{ msg.1 }}</p>
                 </div>
         {% endif %}
@@ -25,21 +33,17 @@
                 {% translate "Fits" %}
             </div>
             <div class="panel-body">
-                <table class="table table-hover dataTable" id="fitTable">
-                    <thead>
-                        <th>{% translate "Name" %}</th>
-                        <th>{% translate "Categories" %}</th>
-                        <th>{% translate "Description" %}</th>
-                        <th>{% translate "Ship Type" %}</th>
-                    </thead>
-                    <tbody>
-                        {% if not fits %}
-                            <tr>
-                                <td colspan="4">
-                                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %} </div>
-                                </td>
-                            </tr>
-                        {% else %}
+                {% if not fits %}
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %}</div>
+                {% else %}
+                    <table class="table table-hover dataTable" id="fitTable">
+                        <thead>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Categories" %}</th>
+                            <th>{% translate "Description" %}</th>
+                            <th>{% translate "Ship Type" %}</th>
+                        </thead>
+                        <tbody>
                             {% for fit in fits %}
                                 <tr>
                                     <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
@@ -49,12 +53,12 @@
                                         {% endfor %}
                                     </td>
                                     <td> {{ fit.description }} </td>
-                                    <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:128 }}" style="height: 32px; width: 32px;" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }} </td>
+                                    <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:32 }}" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }} </td>
                                 </tr>
                             {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -17,9 +17,10 @@
                     <h4 class="modal-title" id="modalTitle">{% translate "Are you sure?" %}</h4>
                 </div>
                 <div class="modal-body">
-                    <p style="white-space: pre-line">{% translate "Are you sure you wish to delete this doctrine?" %}
-
-                        <i><strong>{% translate "This action is permanent." %}</strong></i></p>
+                    <p style="white-space: pre-line">
+                        {% translate "Are you sure you wish to delete this doctrine?" %}
+                        <i><strong>{% translate "This action is permanent." %}</strong></i>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{% translate "No - Close" %}</button>
@@ -35,6 +36,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 {% translate "Doctrine Information" %}
+
                 {% if perms.fittings.manage %}
                     <span data-toggle="modal" data-target="#deleteModal">
                         <button class="btn btn-xs btn-danger" style="float: right; margin-left: 5px;" data-toggle="tooltip" data-placement="top" title="{% translate 'Delete Doctrine' %}"><span class="fa fas fa-times"></span> </button>
@@ -68,36 +70,32 @@
         <div class="panel panel-default">
             <div class="panel-heading">{% translate "Doctrine Fits" %}</div>
             <div class="panel-body">
-                <table class="table table-hover dataTable" id="fitsTable">
-                    <thead>
-                        <th>{% translate "Name" %}</th>
-                        <th>{% translate "Category" %}</th>
-                        <th>{% translate "Description" %}</th>
-                        <th>{% translate "Ship Type" %}</th>
-                    </thead>
-                    <tbody>
-                        {% if not fits %}
-                            <tr>
-                                <td colspan="4">
-                                    <div class="alert alert-warning" style="text-align: center"> {% translate "No Fits Found" %} </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            {% for fit in fits %}
-                                <tr>
-                                    <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
-                                    <td>
-                                        {% for cat in f_cats|get_item:fit.pk %}
-                                        <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
-                                        {% endfor %}
-                                    </td>
-                                    <td> {{ fit.description }} </td>
-                                    <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:128 }}" style="height: 32px; width: 32px;" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }}</td>
-                                </tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                {% if not fits %}
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Fits Found" %}</div>
+                {% else %}
+                    <table class="table table-hover dataTable" id="fitsTable">
+                        <thead>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Category" %}</th>
+                            <th>{% translate "Description" %}</th>
+                            <th>{% translate "Ship Type" %}</th>
+                        </thead>
+                        <tbody>
+                                {% for fit in fits %}
+                                    <tr>
+                                        <td> <a href="{% url 'fittings:view_fit' fit.pk %}">{{ fit.name }}</a> </td>
+                                        <td>
+                                            {% for cat in f_cats|get_item:fit.pk %}
+                                            <span class="label" style="background-color: {{cat.color}}"><a href="{% url 'fittings:view_category' cat.pk %}" class="nostyle">{{cat.name}}</a></span>
+                                            {% endfor %}
+                                        </td>
+                                        <td> {{ fit.description }} </td>
+                                        <td> <img class="img-circle" src="{{ fit.ship_type_type_id|type_render_url:32 }}" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }}</td>
+                                    </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>

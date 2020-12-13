@@ -8,13 +8,19 @@
 
 {% block fittings_block %}
     {% if msg %}
-            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
-                    <p>{{ msg.1 }}</p>
-                </div>
+        <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times</span>
+            </button>
+            <h4>
+                {% if msg.0 == 'danger' %}
+                    {% translate "Oh No!" %}
+                {% elif msg.0 == 'success' %}
+                    {% translate "Success!" %}
+                {% endif %}
+            </h4>
+            <p>{{ msg.1 }}</p>
+        </div>
     {% endif %}
     <div class="container col-sm-12">
         <h2>
@@ -25,22 +31,18 @@
                 {% translate "Doctrines" %}
             </div>
             <div class="panel-body">
-                <table class="table table-hover dataTable" id="docTable">
-                    <thead>
-                        <th> </th>
-                        <th>{% translate "Name" %}</th>
-                        <th>{% translate "Categories" %}</th>
-                        <th>{% translate "Description" %}</th>
-                        <th>{% translate "Ships" %}</th>
-                    </thead>
-                    <tbody>
-                        {% if not docs %}
-                            <tr>
-                                <td colspan="5">
-                                    <div class="alert alert-warning" style="text-align: center">{% translate "No Doctrines Found" %} </div>
-                                </td>
-                            </tr>
-                        {% else %}
+                {% if not docs %}
+                    <div class="alert alert-warning" style="text-align: center">{% translate "No Doctrines Found" %} </div>
+                {% else %}
+                    <table class="table table-hover dataTable" id="docTable">
+                        <thead>
+                            <th> </th>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Categories" %}</th>
+                            <th>{% translate "Description" %}</th>
+                            <th>{% translate "Ships" %}</th>
+                        </thead>
+                        <tbody>
                             {% for doc in docs %}
                                 <tr>
                                     <td> <a href="{% url 'fittings:view_doctrine' doc.pk %}"><img src="{{ doc.icon_url }}" class="img-circle" style="display: block; margin: auto;"/> </a></td>
@@ -53,14 +55,14 @@
                                     <td> {{ doc.description }} </td>
                                     <td>
                                         {% for fitting in doc_dict|get_item:doc.pk %}
-                                            <img src="{{ fitting.ship_type_type_id|type_render_url:64 }}" class="img-circle" style="height: 32px; width: 32px;" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
+                                            <img src="{{ fitting.ship_type_type_id|type_render_url:32 }}" class="img-circle" data-toggle="tooltip" data-placement="bottom" title="{{ fitting.ship_type.type_name }}"/>
                                         {% endfor %}
                                     </td>
                                 </tr>
                             {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -72,7 +74,9 @@
 
 {% block extra_script %}
     $(document).ready(function(){
-        $('#docTable').DataTable();
+        $('#docTable').DataTable({
+            "order": [[ 1, "asc" ]],
+        });
         $('[data-toggle="tooltip"]').tooltip();
     })
 {% endblock %}
