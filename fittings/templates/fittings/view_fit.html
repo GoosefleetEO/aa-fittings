@@ -253,15 +253,15 @@
                     {% endif %}
                     {% if fitting.Cargo|length > 0 %}<li class="list-group-item list-group-item-warning">{% translate "Cargo Bay" %}</li>{% endif %}
                     {% for ammo in fitting.Cargo %}
-                        <li class="list-group-item"> <li class="list-group-item"><img src="{{ ammo.type_id|type_icon_url:32 }}" title="{{ ammo.item_name }}"> {{ammo.item_name}} x{{ammo.quantity}}</li>
+                        <li class="list-group-item"><img src="{{ ammo.type_id|type_icon_url:32 }}" title="{{ ammo.item_name }}"> {{ammo.item_name}} x{{ammo.quantity}}</li>
                     {% endfor %}
                     {% if fitting.DroneBay|length > 0 %}<li class="list-group-item list-group-item-warning">{% translate "Drone Bay" %}</li>{% endif %}
                     {% for drone in fitting.DroneBay %}
-                        <li class="list-group-item"> <li class="list-group-item"><img src="{{ drone.type_id|type_icon_url:32 }}" title="{{ drone.item_name }}"> {{drone.item_name}} x{{drone.quantity}}</li>
+                        <li class="list-group-item"><img src="{{ drone.type_id|type_icon_url:32 }}" title="{{ drone.item_name }}"> {{drone.item_name}} x{{drone.quantity}}</li>
                     {% endfor %}
                     {% if fitting.FighterBay|length > 0 %}<li class="list-group-item list-group-item-warning">{% translate "Fighter Bay" %}</li>{% endif %}
                     {% for fighter in fitting.FighterBay %}
-                        <li class="list-group-item"> <li class="list-group-item"><img src="{{ fighter.type_id|type_icon_url:32 }}" title="{{ fighter.item_name }}"> {{fighter.item_name}} x{{fighter.quantity}}</li>
+                        <li class="list-group-item"><img src="{{ fighter.type_id|type_icon_url:32 }}" title="{{ fighter.item_name }}"> {{fighter.item_name}} x{{fighter.quantity}}</li>
                     {% endfor %}
                 </ul>
               </div>
