@@ -80,9 +80,9 @@ Configure your AA settings (`local.py`) as follows:
 
 ```python
 # Fittings Module
-CELERYBEAT_SCHEDULE['fittings_check_module_names'] = {
-    'task': 'fittings.tasks.update_type_name',
-    'schedule': crontab(minute=0, hour=0, day_of_week=1),
+CELERYBEAT_SCHEDULE['fittings_update_types'] = {
+    'task': 'fittings.tasks.verify_server_version_and_update_types',
+    'schedule': crontab(minute=0, hour='12'),
 }
 ```
 ### 3. Finalize Install

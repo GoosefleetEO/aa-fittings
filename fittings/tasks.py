@@ -3,7 +3,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task
 
-from .models import Fitting, FittingItem, Type, DogmaEffect, DogmaAttribute
+from .models import Fitting, FittingItem, ServerVersion, Type, DogmaEffect, DogmaAttribute
+from .providers import esi
 
 logger = get_extension_logger(__name__)
 
@@ -276,8 +277,8 @@ def missing_group_type_fix():
 
 
 @shared_task
-def update_type_name():
-    logger.info("Started updating type names for preexisting types used in fittings.")
+def update_used_types():
+    logger.info("Started updating types for preexisting types used in fittings.")
     fittingItem = FittingItem.objects.order_by('type_id').values_list('type_id', flat=True).distinct()
     _processes = []
     with ThreadPoolExecutor(max_workers=50) as ex:
@@ -287,4 +288,21 @@ def update_type_name():
     for item in as_completed(_processes):
         _ = item.result()
 
-    logger.info("Done updating type names.")
+    logger.info("Done updating type.")
+
+@shared_task
+def verify_server_version_and_update_types():
+    logger.info("Looking up the current eve online server version")
+    currentServerVersion = ServerVersion.objects.all()    
+    if len(currentServerVersion) > 1:
+        raise Exception("Only one server version should be active")
+
+    c = esi.client
+    response = c.Status.get_status().result()
+    serverVersion = response.get("server_version")
+
+    if serverVersion is not None:
+        if len(currentServerVersion) == 0 or currentServerVersion[0].id != int(serverVersion):
+            ServerVersion.objects.all().delete()
+            ServerVersion.objects.create(id=serverVersion)
+            update_used_types.delay()
