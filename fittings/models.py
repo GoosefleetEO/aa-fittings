@@ -235,3 +235,15 @@ class Category(models.Model):
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         default_permissions = (())
+
+
+# Unified Category
+class ServerVersion(models.Model):
+    id = models.BigIntegerField(primary_key=True)
+
+    def __str__(self):
+        return f"Server Version: {self.id}"
+
+    class Meta:
+        verbose_name = "ServerVersion"
+        default_permissions = (())
