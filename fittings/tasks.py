@@ -31,7 +31,7 @@ class EftParser:
         last_line = ''
         
         for section in sections:
-            counter = 0;
+            counter = 0
             if section.isDroneBay():
                 for line in section.lines:
                     quantity = line.split()[-1]
@@ -186,6 +186,8 @@ def create_fit(eft_text, description=None):
 
     def __create_fit(ship_type, name, description):
         type_obj = _get_type(ship_type)
+        if name == " ":
+            name = "Unnamed " + ship_type + " fitting"
         fit = Fitting.objects.create(ship_type=type_obj, ship_type_type_id=type_obj.pk,
                                      name=name, description=description)
         return fit
@@ -194,6 +196,7 @@ def create_fit(eft_text, description=None):
     create_fitting_items(fit, parsed_eft)
 
     logger.info("Done creating fit.")
+
 
 @shared_task 
 def create_fitting_items(fit, parsed_eft):
