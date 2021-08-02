@@ -31,7 +31,7 @@ def _get_accessible_categories(user):
             .annotate(fittings_count=Count('fittings', distinct=True))\
             .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
             .annotate(total_fits=F('fittings_count')+F('d_fittings_count')))
-    return tuple(cats.distinct())
+    return tuple(cats)
 
 
 def _get_fits_qs(request, groups, **kwargs):
