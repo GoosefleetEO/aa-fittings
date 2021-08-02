@@ -45,8 +45,8 @@ class EftParser:
             else:
                 for line in section.lines:
                     if line.startswith('['):
-                        if ', ' in line:
-                            ship_type, fit_name = line[1:-1].split(', ')
+                        if ',' in line:
+                            ship_type, fit_name = line[1:-1].split(',')
                             continue
 
                         if 'empty' in line.strip('[]').lower():
@@ -70,6 +70,7 @@ class EftParser:
                 'fighter_bay': fighter_bay, 'fitting_notes': parsed_fitting_notes['fitting_notes']}
 
 
+
 def _importSectionIter(lines):
     section = Section()
     for line in lines:
@@ -81,6 +82,7 @@ def _importSectionIter(lines):
             section.lines.append(line)
     if section.lines:
         yield section
+
 
 def _removeOfflinedModulesMention(lines):
     fitting_notes = ''
@@ -102,12 +104,12 @@ def _removeOfflinedModulesMention(lines):
         eft_lines.append(line)
     return {'fitting_notes': fitting_notes, 'eft_lines': eft_lines}
 
-class Section:    
+
+class Section:
     def __init__(self):
         self.lines = []
 
     def isDroneBay(self):
-
         types = []
         for line in self.lines:
             if line.startswith('['):
@@ -186,7 +188,7 @@ def create_fit(eft_text, description=None):
 
     def __create_fit(ship_type, name, description):
         type_obj = _get_type(ship_type)
-        if name == " ":
+        if name == " " or name == "":
             name = "Unnamed " + ship_type + " fitting"
         fit = Fitting.objects.create(ship_type=type_obj, ship_type_type_id=type_obj.pk,
                                      name=name, description=description)
