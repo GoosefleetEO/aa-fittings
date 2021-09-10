@@ -33,6 +33,7 @@ Fittings offers the following features:
 and easy to manage.
   * Access to categories can be restricted to specific groups.
 * Tracks changes to module names.
+* [AA-Discordbot](https://github.com/pvyParts/allianceauth-discordbot) Integration for searching/posting fits to discord
 
 ## Screenshots
 
@@ -115,7 +116,9 @@ Lastly, restart your supervisor tasks.
 *Note: Be sure to follow any version specific update instructions as well. These instructions can be found on the `Tags` page for this repository.*
 
 ## Settings
-This application has no settings that need to be added to your allianceauth settings (`local.py`) file.
+Setting | Default | Description
+--- | --- | ---
+`FITTINGS_AADISCORDBOT_INTEGRATION` | `True` | Enables the AADiscordbot cog
 
 ## Permissions
 
