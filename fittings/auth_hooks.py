@@ -1,4 +1,5 @@
 from allianceauth import hooks
+from fittings.app_settings import FITTINGS_AADISCORDBOT_INTEGRATION
 from allianceauth.services.hooks import MenuItemHook, UrlHook
 
 from . import urls
@@ -24,3 +25,10 @@ def register_menu():
 @hooks.register('url_hook')
 def register_url():
     return UrlHook(urls, 'fittings', '^fittings/')
+
+@hooks.register('discord_cogs_hook')
+def register_cogs():
+    if FITTINGS_AADISCORDBOT_INTEGRATION is True:
+        return ["fittings.cogs.fittings"]
+    else:
+        return [""]
