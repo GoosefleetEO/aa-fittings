@@ -65,7 +65,7 @@ def _get_fits_qs(request, groups, **kwargs):
         cats = _get_accessible_categories(request.user)
         fits = cls.filter(Q(Q(category__in=cats) | Q(doctrines__category__in=cats)))
         fits = p_fits.union(fits)
-    return fits.distinct()
+    return fits
 
 
 def _get_public_fits(np=False):
@@ -110,7 +110,7 @@ def _get_docs_qs(request, groups, **kwargs):
             cls.prefetch_related('category')
             .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))
             .filter(Q(category__isnull=True) | Q(category__groups__isnull=True))
-        ).distinct()
+        )
 
     return docs
 
