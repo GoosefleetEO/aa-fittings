@@ -23,7 +23,7 @@ def _get_accessible_categories(user):
     :return:
     """
     groups = user.groups.all().prefetch_related('access_restricted_category')
-    cats = Category.objects.none()
+    cats = _get_public_categories()
     for group in groups:
         cats = cats.union(group.access_restricted_category.all()\
             .annotate(groups_count=Count('groups', distinct=True))\
@@ -32,6 +32,20 @@ def _get_accessible_categories(user):
             .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True))\
             .annotate(total_fits=F('fittings_count')+F('d_fittings_count')))
     return tuple(cats)
+
+
+def _get_public_categories():
+    """
+    Returns a list of publis categories.
+    :return:
+    """
+    c = Category.objects.filter(groups__isnull=True) \
+        .annotate(groups_count=Count('groups', distinct=True)) \
+        .annotate(doctrines_count=Count('doctrines', distinct=True)) \
+        .annotate(fittings_count=Count('fittings', distinct=True)) \
+        .annotate(d_fittings_count=Count('doctrines__fittings', distinct=True)) \
+        .annotate(total_fits=F('fittings_count') + F('d_fittings_count'))
+    return c
 
 
 def _get_fits_qs(request, groups, **kwargs):
