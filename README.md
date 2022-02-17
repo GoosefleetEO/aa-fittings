@@ -65,6 +65,12 @@ and easy to manage.
 ![view category](https://i.imgur.com/hs7DDqp.png)
 
 ## Installation
+### 0. Check your MariaDB version
+Though AllianceAuth and most of the community plugins available for it work just fine on MariaDB versions in the 10.3 and 10.4
+range, this plugin requires version 10.5 or greater.
+
+For instructions on installing newer versions of MariaDB please refer to their documentation [here](https://mariadb.org/download/?t=repo-config)
+
 ### 1. Install App
 Install the app into your allianceauth virtual environment via PIP.
 
