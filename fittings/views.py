@@ -118,8 +118,7 @@ def _get_docs_qs(request, groups, **kwargs):
     else:
         docs = cls.prefetch_related('category') \
             .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type'))) \
-            .filter(
-            Q(category__groups__in=groups))
+            .filter(Q(category__groups__in=groups))
         docs = docs.union(
             cls.prefetch_related('category')
             .prefetch_related(Prefetch('fittings', Fitting.objects.select_related('ship_type')))
@@ -298,7 +297,7 @@ def view_fit(request, fit_id):
         else:
             fittings[item.flag] = item
 
-    ctx['doctrines'] = fit.doctrines.all()
+    ctx['doctrines'] = _get_docs_qs(request, request.user.groups.all(), obj=fit)
     ctx['slots'] = _build_slots(fit)
     ctx['fit'] = fit
     ctx['fitting'] = fittings
@@ -374,17 +373,18 @@ def view_doctrine(request, doctrine_id):
     ctx['fits'] = doctrine.fittings.all()
 
     # Build fit category list
+    a_cats = _get_accessible_categories(request.user)
     categories = dict()
     for fit in ctx['fits']:
         cats = []
         ids = []
         for cat in fit.category.all():
-            if cat.pk not in ids:
+            if cat.pk not in ids and cat in a_cats:
                 cats.append(cat)
                 ids.append(cat.pk)
         for doc in fit.doctrines.all():
             for cat in doc.category.all():
-                if cat.pk not in ids:
+                if cat.pk not in ids and cat in a_cats:
                     cats.append(cat)
                     ids.append(cat.pk)
         categories[fit.pk] = cats
@@ -401,6 +401,7 @@ def view_all_fits(request):
 
     groups = request.user.groups.all()
     fits = _get_fits_qs(request, groups)
+    a_cats = _get_accessible_categories(request.user)
 
     ctx['fits'] = fits
     categories = dict()
@@ -408,12 +409,12 @@ def view_all_fits(request):
         cats = []
         ids = []
         for cat in fit.category.all():
-            if cat.pk not in ids:
+            if cat.pk not in ids and cat in a_cats:
                 cats.append(cat)
                 ids.append(cat.pk)
         for doc in fit.doctrines.all():
             for cat in doc.category.all():
-                if cat.pk not in ids:
+                if cat.pk not in ids and cat in a_cats:
                     cats.append(cat)
                     ids.append(cat.pk)
         categories[fit.pk] = cats
@@ -528,7 +529,6 @@ def add_category(request):
 @permission_required('fittings.access_fittings')
 @login_required()
 def view_category(request, cat_id):
-    # TODO: Check that the user has access to the category before doing anything else.
     ctx = {}
     doc_dict = {}
     try:
@@ -540,6 +540,11 @@ def view_category(request, cat_id):
         ctx['cat'] = cat
     except Exception as e:
         messages.warning(request, gt("Category not found!"))
+        return redirect("fittings:dashboard")
+
+    a_cats = _get_accessible_categories(request.user)
+    if cat not in a_cats:
+        messages.warning(request, gt("You do not have access to that category."))
         return redirect("fittings:dashboard")
 
     # Get Docs and fittings
@@ -564,12 +569,12 @@ def view_category(request, cat_id):
         cats = []
         ids = []
         for cat in fit.category.all():
-            if cat.pk not in ids:
+            if cat.pk not in ids and cat in a_cats:
                 cats.append(cat)
                 ids.append(cat.pk)
         for doc in fit.doctrines.all():
             for cat in doc.category.all():
-                if cat.pk not in ids:
+                if cat.pk not in ids and cat in a_cats:
                     cats.append(cat)
                     ids.append(cat.pk)
         categories[fit.pk] = cats
