@@ -30,7 +30,7 @@ class Fittings(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener("on_message")
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def respond_to_fittings(self, message):
         """
         Listens to ALL Messages, act if they contain AA-Fittings Links
@@ -70,7 +70,7 @@ class Fittings(commands.Cog):
             return
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def fit(self, ctx, fit_name):
         """
         Returns fits and ships matching the string given
@@ -78,19 +78,19 @@ class Fittings(commands.Cog):
         await ctx.channel.trigger_typing()
         await ctx.message.add_reaction(chr(0x231B))
 
-        try:
-            fits = Fitting.objects.filter(Q(name__icontains=fit_name) | Q(ship_type__type_name__icontains=fit_name))
-        except ObjectDoesNotExist:
-            return await ctx.reply("No Fits Found", mention_author=False)
+        fits = Fitting.objects.filter(Q(name__icontains=fit_name) | Q(ship_type__type_name__icontains=fit_name))
 
-        for fit in fits:
-            embed = fitting_details(fit.id)
-            await ctx.reply(embed=embed, mention_author=False)
+        if fits.exists() is True:
+            for fit in fits:
+                embed = fitting_details(fit.id)
+                await ctx.reply(embed=embed, mention_author=False)
+        else:
+            await ctx.reply("No Fits Found", mention_author=False)
 
         return await ctx.message.clear_reaction(chr(0x231B))
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def fit_id(self, ctx, fit_id):
         """
         Return information on a fit ID
@@ -101,18 +101,27 @@ class Fittings(commands.Cog):
         return await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
-    async def fit_ship(self, ctx, fit_id):
+    @sender_has_perm('fittings.access_fittings')
+    async def fit_ship(self, ctx, ship_name):
         """
         Returns fittings for a Ship Type
         """
+        await ctx.channel.trigger_typing()
+        await ctx.message.add_reaction(chr(0x231B))
 
-        embed = fitting_details(fit_id)
+        fits = Fitting.objects.filter(ship_type__type_name__icontains=ship_name)
 
-        return await ctx.reply(embed=embed, mention_author=False)
+        if fits.exists() is True:
+            for fit in fits:
+                embed = fitting_details(fit.id)
+                await ctx.reply(embed=embed, mention_author=False)
+        else:
+            await ctx.reply("No Fits Found", mention_author=False)
+
+        return await ctx.message.clear_reaction(chr(0x231B))
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def doctrine(self, ctx, doctrine_name):
         """
         Returns doctrines matching the string given
@@ -132,7 +141,7 @@ class Fittings(commands.Cog):
         return await ctx.message.clear_reaction(chr(0x231B))
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def doctrine_id(self, ctx, doctrine_id):
         """
         Return information on a doctrine ID
@@ -143,7 +152,7 @@ class Fittings(commands.Cog):
         return await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(pass_context=True)
-    @sender_has_perm('fitting.access_fittings')
+    @sender_has_perm('fittings.access_fittings')
     async def category_id(self, ctx, category_id):
         """
         Return information on a category ID
@@ -169,13 +178,13 @@ def fitting_details(fit_id):
 
     doctrines_value = ''
     for doctrine in Doctrine.objects.filter(fittings=fit).values("name", "id"):
-        doctrines_value = f"{doctrines_value}[{doctrine['name']}]({get_site_url()}/fittings/doctrine/{doctrine['id']}/) "
+        doctrines_value = f"{doctrines_value}[{doctrine['name']}]({get_site_url()}/fittings/doctrine/{doctrine['id']}/)<br>"
     if doctrines_value == '':
         doctrines_value = 'None'
 
     category_value = ''
     for category in Category.objects.filter(fittings=fit).values("name", "id"):
-        category_value = f"{category_value}[{category['name']}]({get_site_url()}/fittings/cat/{category['id']}/) "
+        category_value = f"{category_value}[{category['name']}]({get_site_url()}/fittings/cat/{category['id']}/)<br>"
     if category_value == '':
         category_value = 'None'
 
