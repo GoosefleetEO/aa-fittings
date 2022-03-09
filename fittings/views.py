@@ -179,7 +179,30 @@ def _check_fit_access(request, fit_id: int) -> bool:
         return True
 
     access = (fit in pub) or any(c in a_cats for c in f_cats)
-    logger.debug(f"returning {access}")
+    logger.debug(f"returning {access} (fitting access check)")
+    return access
+
+
+def _check_doc_access(request, doc_id: int) -> bool:
+    """
+    Checks whether or not the user should have access to the specified fit.
+    :param request:
+    :param doc_id:
+    :return:
+    """
+    doctrine = Doctrine.objects.prefetch_related('category').get(pk=int(doc_id))
+    a_cats = _get_accessible_categories(request.user)
+    d_cats = doctrine.category.all()
+    if len(d_cats) == 0:
+        # If there are no categories, then the doctrine is considered public.
+        return True
+
+    if request.user.has_perm("fittings.manage"):
+        logger.debug(f"User {request.user.pk} has manage permissions, returning True")
+        return True
+
+    access = any(c in a_cats for c in d_cats)
+    logger.debug(f"returning {access} (doctrine access check)")
     return access
 
 
@@ -335,6 +358,14 @@ def view_doctrine(request, doctrine_id):
             .prefetch_related('fittings__doctrines__category').get(pk=doctrine_id)
     except Doctrine.DoesNotExist:
         messages.warning(request, gt('Doctrine not found!'))
+
+        return redirect('fittings:dashboard')
+
+    # Check if the user should be able to access the doctrine.
+    access = _check_doc_access(request, doctrine_id)
+
+    if not access:
+        messages.warning(request, gt('You do not have access to that doctrine.'))
 
         return redirect('fittings:dashboard')
 
