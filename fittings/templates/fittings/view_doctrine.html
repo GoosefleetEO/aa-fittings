@@ -56,8 +56,10 @@
                 <dl>
                     <dt>{% translate "Description" %}</dt>
                     <dd>{{ doctrine.description|break_html_lines|striptags }}</dd>
+                    {% if doctrine.created %}
                     <dt>{% translate "Created" %}</dt>
                     <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
+                    {% endif %}
                     {% if doctrine.last_updated %}
                         <dt>{% translate "Last Updated" %}</dt>
                         <dd>{{ doctrine.last_updated|date:'d M Y H:i:s' }}</dd>

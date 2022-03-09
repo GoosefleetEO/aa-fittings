@@ -106,6 +106,8 @@ class Fitting(models.Model):
     name = models.CharField(max_length=255, null=False)
     ship_type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
     ship_type_type_id = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
         return "{} ({})".format(self.ship_type.type_name, self.name)
@@ -199,7 +201,7 @@ class Doctrine(models.Model):
     fittings = models.ManyToManyField(Fitting, related_name='doctrines')
     description = models.TextField(max_length=1000)
     created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(null=True)
+    last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"

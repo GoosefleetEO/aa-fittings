@@ -68,6 +68,14 @@
                             {% endfor %}
                         </ul>
                     </dd>
+                    {% if fit.created %}
+                    <dt>{% translate "Created" %}</dt>
+                    <dd>{{ fit.created|date:'d M Y H:i:s' }}</dd>
+                    {% endif %}
+                    {% if fit.last_updated %}
+                        <dt>{% translate "Last Updated" %}</dt>
+                        <dd>{{ fit.last_updated|date:'d M Y H:i:s' }}</dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>
@@ -159,7 +167,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="well">
-                                        <p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ fit.description|break_html_lines|striptags }}</p>
+                                        <p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ fit.description|break_html_lines|striptags|urlize }}</p>
                                     </div>
                                 </div>
                             </div>
