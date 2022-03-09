@@ -22,6 +22,8 @@ def _get_accessible_categories(user):
     :param user: a User object.
     :return:
     """
+    if user.has_perm("fittings.manage"):
+        return Category.objects.all()
     groups = user.groups.all().prefetch_related('access_restricted_category')
     cats = _get_public_categories()
     for group in groups:
