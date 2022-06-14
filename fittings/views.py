@@ -331,18 +331,28 @@ def add_doctrine(request):
         description = request.POST['description']
         icon_url = request.POST['iconSelect']
         fitSelect = [int(fit) for fit in request.POST.getlist('fitSelect')]
+        catSelect = [int(cat) for cat in request.POST.getlist('categorySelect')]
 
         fits = Fitting.objects.filter(pk__in=fitSelect)
+        cats = Category.objects.filter(pk__in=catSelect)
+        
         d = Doctrine(name=name, description=description, icon_url=icon_url)
         d.save()
+        
         for fitting in fits:
             d.fittings.add(fitting)
+
+        for category in cats:
+            category.doctrines.add(d)
+        
         return redirect('fittings:dashboard')
 
     fits = Fitting.objects.all()
+    cats = Category.objects.all()
     ships = Fitting.objects.order_by('ship_type').values('ship_type', 'ship_type__type_name')\
         .annotate(a=Count('ship_type'))
     ctx['fittings'] = fits
+    ctx['categories'] = cats
     ctx['ships'] = ships
     return render(request, 'fittings/add_doctrine.html', context=ctx)
 
@@ -439,24 +449,33 @@ def edit_doctrine(request, doctrine_id):
         name = request.POST['name']
         description = request.POST['description']
         icon_url = request.POST['iconSelect']
+
         fitSelect = [int(fit) for fit in request.POST.getlist('fitSelect')]
-        fits = doctrine.fittings.all()
+        catSelect = [int(cat) for cat in request.POST.getlist('categorySelect')] 
 
         fits = Fitting.objects.filter(pk__in=fitSelect)
         doctrine.name = name
         doctrine.description = description
         doctrine.icon_url = icon_url
         doctrine.save()
+
         doctrine.fittings.clear()
         for fit in fitSelect:
             doctrine.fittings.add(fit)
+        
+        doctrine.category.clear()
+        for cat in catSelect:
+            doctrine.category.all(cat)
+        
         return redirect('fittings:view_doctrine', doctrine_id)
 
+    cats = Category.objects.all()
     ships = Fitting.objects.order_by('ship_type').values('ship_type', 'ship_type__type_name') \
         .annotate(a=Count('ship_type'))
     ctx['ships'] = ships
     ctx['doctrine'] = doctrine
     ctx['doc_fits'] = doctrine.fittings.all()
+    ctx['cats'] = Category.objects.all()
     ctx['fits'] = Fitting.objects.exclude(pk__in=ctx['doc_fits']).all()
     return render(request, 'fittings/edit_doctrine.html', context=ctx)
 
