@@ -92,8 +92,8 @@
 
 {% block extra_script %}
     $('#fitSelect').multiSelect({
-          selectableHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search' style='margin-bottom: 3px;'>",
-          selectionHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search' style='margin-bottom: 3px;'>",
+          selectableHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='{% translate "Search" %}' style='margin-bottom: 3px;'>",
+          selectionHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='{% translate "Search" %}' style='margin-bottom: 3px;'>",
           afterInit: function(ms){
             var that = this,
                 $selectableSearch = that.$selectableUl.prev(),

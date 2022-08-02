@@ -3,134 +3,150 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Translators:
+# MelonCafe <meloncafe@gmail.com>, 2022
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-21 14:01-0400\n"
+"POT-Creation-Date: 2022-08-02 17:06+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Last-Translator: MelonCafe <meloncafe@gmail.com>\n"
+"Language-Team: Siege Green <contact@siege-green.com>\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: templates/fittings/add_doctrine.html:23
 msgid "Add Doctrine"
-msgstr ""
+msgstr "독트린 추가"
 
 #: templates/fittings/add_doctrine.html:38
 #: templates/fittings/edit_doctrine.html:36
 msgid "New Doctrine"
-msgstr ""
+msgstr "신규 독트린"
 
 #: templates/fittings/add_doctrine.html:46
 #: templates/fittings/edit_doctrine.html:44
 msgid "Doctrine Name"
-msgstr ""
+msgstr "독트린 이름"
 
 #: templates/fittings/add_doctrine.html:52
 #: templates/fittings/edit_doctrine.html:50
 msgid "Doctrine Description"
-msgstr ""
+msgstr "독트린 설명"
 
 #: templates/fittings/add_doctrine.html:58
 #: templates/fittings/create_category.html:76
 #: templates/fittings/edit_category.html:76
 #: templates/fittings/edit_doctrine.html:56
 msgid "Select Fits"
-msgstr ""
+msgstr "피팅 선택"
 
 #: templates/fittings/add_doctrine.html:68
 #: templates/fittings/edit_doctrine.html:69
 msgid "Select Doctrine Icon"
-msgstr ""
+msgstr "독트린 대표 아이콘 선택"
 
 #: templates/fittings/add_doctrine.html:75
 #: templates/fittings/edit_doctrine.html:77
 msgid ""
 "If you do not see the ship type that you would like to use for the icon, add "
 "a fit that uses that ship type and try again."
-msgstr ""
+msgstr "만약 아이콘이 표시되지 않으면 피팅을 한 번 저장하고 다시 시도해 주세요"
 
 #: templates/fittings/add_doctrine.html:79 templates/fittings/add_fit.html:41
 #: templates/fittings/create_category.html:96
 #: templates/fittings/edit_category.html:96
 #: templates/fittings/edit_doctrine.html:81 templates/fittings/edit_fit.html:42
 msgid "Submit"
-msgstr ""
+msgstr "저장"
+
+#: templates/fittings/add_doctrine.html:95
+#: templates/fittings/add_doctrine.html:96
+#: templates/fittings/create_category.html:123
+#: templates/fittings/create_category.html:131
+#: templates/fittings/create_category.html:139
+msgid "Search"
+msgstr "검색"
 
 #: templates/fittings/add_fit.html:5
 msgid "Add Fit"
-msgstr ""
+msgstr "피팅 추가"
 
 #: templates/fittings/add_fit.html:20
 msgid "Add Fitting"
-msgstr ""
+msgstr "피팅 추가"
 
-#: templates/fittings/add_fit.html:28 templates/fittings/dashboard.html:33
-#: templates/fittings/edit_fit.html:29 templates/fittings/view_all_fits.html:32
+#: templates/fittings/add_fit.html:28 templates/fittings/dashboard.html:42
+#: templates/fittings/edit_fit.html:29 templates/fittings/view_all_fits.html:43
 #: templates/fittings/view_category.html:75
 #: templates/fittings/view_category.html:112
-#: templates/fittings/view_doctrine.html:55
-#: templates/fittings/view_doctrine.html:75
+#: templates/fittings/view_doctrine.html:57
+#: templates/fittings/view_doctrine.html:82
 msgid "Description"
-msgstr ""
+msgstr "설명"
+
+#: templates/fittings/add_fit.html:35 templates/fittings/edit_fit.html:36
+#: templates/fittings/view_fit.html:8 templates/fittings/view_fit.html:182
+msgid "Fit"
+msgstr "피팅"
 
 #: templates/fittings/base.html:37
 msgid "Toggle navigation"
-msgstr ""
+msgstr "메뉴 토글"
 
 #: templates/fittings/base.html:42
 msgid "Fittings and Doctrines"
-msgstr ""
+msgstr "독트린"
 
 #: templates/fittings/base.html:45 templates/fittings/view_all_fits.html:7
 msgid "View All Fits"
-msgstr ""
+msgstr "모든 피팅 보기"
 
 #: templates/fittings/base.html:46
 #: templates/fittings/view_all_categories.html:7
 msgid "View All Categories"
-msgstr ""
+msgstr "모든 카테고리 보기"
 
 #: templates/fittings/base.html:54
 msgid "Fitting"
-msgstr ""
+msgstr "피팅"
 
 #: templates/fittings/base.html:55 templates/fittings/view_doctrine.html:8
 msgid "Doctrine"
-msgstr ""
+msgstr "독트린"
 
 #: templates/fittings/base.html:56 templates/fittings/view_category.html:35
-#: templates/fittings/view_doctrine.html:74
+#: templates/fittings/view_doctrine.html:81
 msgid "Category"
-msgstr ""
+msgstr "카테고리"
 
 #: templates/fittings/create_category.html:31
 msgid "Add Category"
-msgstr ""
+msgstr "케타고리 추가"
 
 #: templates/fittings/create_category.html:37
 msgid "New Category"
-msgstr ""
+msgstr "신규 카테고리"
 
 #: templates/fittings/create_category.html:47
 #: templates/fittings/edit_category.html:47
 msgid "Category Name"
-msgstr ""
+msgstr "카테고리 이름"
 
 #: templates/fittings/create_category.html:53
 #: templates/fittings/edit_category.html:53
 msgid "Category Color"
-msgstr ""
+msgstr "카테고리 색상"
 
 #: templates/fittings/create_category.html:63
 #: templates/fittings/edit_category.html:63
 msgid "Select Groups"
-msgstr ""
+msgstr "볼 수 있는 그룹 선택"
 
 #: templates/fittings/create_category.html:64
 #: templates/fittings/edit_category.html:64
@@ -139,274 +155,301 @@ msgid ""
 "category. If no groups are selected the category will be visible to all with "
 "fittings module access."
 msgstr ""
+"그룹을 추가하면 해당 그룹에 속한 사람만 볼 수 있습니다.<br>그룹을 선택하지 않"
+"으면 모든 사람이 볼 수 있습니다."
 
 #: templates/fittings/create_category.html:86
 #: templates/fittings/edit_category.html:86
 msgid "Select Doctrines"
-msgstr ""
+msgstr "독트린 선택 (해당 독트린에 포함된 모든 피팅 추가)"
+
+#: templates/fittings/create_category.html:121
+#: templates/fittings/create_category.html:129
+#: templates/fittings/create_category.html:137
+msgid "Select Value"
+msgstr "대상 선택"
+
+#: templates/fittings/create_category.html:122
+#: templates/fittings/create_category.html:130
+#: templates/fittings/create_category.html:138
+msgid "No Results"
+msgstr "검색 결과 없음"
 
 #: templates/fittings/dashboard.html:7
 msgid "Dashboard"
-msgstr ""
+msgstr "대시보드"
 
-#: templates/fittings/dashboard.html:21
+#: templates/fittings/dashboard.html:17
+#: templates/fittings/view_all_categories.html:17
+#: templates/fittings/view_all_fits.html:18
+msgid "Oh No!"
+msgstr "실패!"
+
+#: templates/fittings/dashboard.html:19
+#: templates/fittings/view_all_categories.html:19
+#: templates/fittings/view_all_fits.html:20
+msgid "Success!"
+msgstr "성공!"
+
+#: templates/fittings/dashboard.html:27
 msgid "Doctrine List"
-msgstr ""
-
-#: templates/fittings/dashboard.html:25
-#: templates/fittings/view_category.html:65 templates/fittings/view_fit.html:63
-msgid "Doctrines"
-msgstr ""
+msgstr "독트린 목록"
 
 #: templates/fittings/dashboard.html:31
-#: templates/fittings/view_all_categories.html:30
-#: templates/fittings/view_all_fits.html:30
+#: templates/fittings/view_category.html:65 templates/fittings/view_fit.html:63
+msgid "Doctrines"
+msgstr "독트린"
+
+#: templates/fittings/dashboard.html:35
+#: templates/fittings/view_category.html:82
+msgid "No Doctrines Found"
+msgstr "저장된 독트린이 없습니다."
+
+#: templates/fittings/dashboard.html:40
+#: templates/fittings/view_all_categories.html:39
+#: templates/fittings/view_all_fits.html:41
 #: templates/fittings/view_category.html:48
 #: templates/fittings/view_category.html:73
 #: templates/fittings/view_category.html:110
-#: templates/fittings/view_doctrine.html:73
+#: templates/fittings/view_doctrine.html:80
 msgid "Name"
-msgstr ""
+msgstr "이름"
 
-#: templates/fittings/dashboard.html:32
-#: templates/fittings/view_all_fits.html:31
+#: templates/fittings/dashboard.html:41
+#: templates/fittings/view_all_fits.html:42
 #: templates/fittings/view_category.html:74
 #: templates/fittings/view_category.html:111
 msgid "Categories"
-msgstr ""
+msgstr "카테고리"
 
-#: templates/fittings/dashboard.html:34
+#: templates/fittings/dashboard.html:43
 #: templates/fittings/view_category.html:76
 msgid "Ships"
-msgstr ""
-
-#: templates/fittings/dashboard.html:40
-#: templates/fittings/view_category.html:82
-msgid "No Doctrines Found"
-msgstr ""
+msgstr "함선"
 
 #: templates/fittings/edit_category.html:31
 #: templates/fittings/edit_category.html:37
-#: templates/fittings/view_all_categories.html:57
+#: templates/fittings/view_all_categories.html:59
 #: templates/fittings/view_category.html:38
 msgid "Edit Category"
-msgstr ""
+msgstr "카테고리 수정"
 
 #: templates/fittings/edit_doctrine.html:21
-#: templates/fittings/view_doctrine.html:42
+#: templates/fittings/view_doctrine.html:44
 msgid "Edit Doctrine"
-msgstr ""
+msgstr "독트린 수정"
 
 #: templates/fittings/edit_doctrine.html:72
 msgid "Current Icon"
-msgstr ""
+msgstr "현재 대표 아이콘"
 
 #: templates/fittings/edit_fit.html:6 templates/fittings/edit_fit.html:21
 msgid "Update Fitting"
-msgstr ""
+msgstr "피팅 수정"
 
-#: templates/fittings/edit_fit.html:36 templates/fittings/view_fit.html:8
-#: templates/fittings/view_fit.html:174
-msgid "Fit"
-msgstr ""
-
-#: templates/fittings/view_all_categories.html:21
+#: templates/fittings/view_all_categories.html:27
 msgid "Category List"
-msgstr ""
-
-#: templates/fittings/view_all_categories.html:25
-#: templates/fittings/view_all_fits.html:25
-msgid "Fits"
-msgstr ""
+msgstr "카테고리 목록"
 
 #: templates/fittings/view_all_categories.html:31
-msgid "Doctrines Assigned"
-msgstr ""
+#: templates/fittings/view_all_fits.html:33
+msgid "Fits"
+msgstr "피팅 목록"
 
-#: templates/fittings/view_all_categories.html:32
-msgid "Fittings Assigned"
-msgstr ""
-
-#: templates/fittings/view_all_categories.html:34
-msgid "Groups Assigned"
-msgstr ""
-
-#: templates/fittings/view_all_categories.html:42
+#: templates/fittings/view_all_categories.html:35
 msgid "No Categories Found"
-msgstr ""
+msgstr "저장된 카테고리가 없습니다."
 
-#: templates/fittings/view_all_categories.html:54
+#: templates/fittings/view_all_categories.html:40
+msgid "Doctrines Assigned"
+msgstr "독트린 지정됨"
+
+#: templates/fittings/view_all_categories.html:41
+msgid "Fittings Assigned"
+msgstr "피팅 지정됨"
+
+#: templates/fittings/view_all_categories.html:43
+msgid "Groups Assigned"
+msgstr "그룹 지정됨"
+
+#: templates/fittings/view_all_categories.html:56
 #: templates/fittings/view_category.html:29
 msgid "View Category"
-msgstr ""
+msgstr "카테고리 보기"
 
-#: templates/fittings/view_all_categories.html:60
+#: templates/fittings/view_all_categories.html:62
 #: templates/fittings/view_category.html:41
 msgid "Delete Category"
-msgstr ""
+msgstr "카테고리 삭제"
 
-#: templates/fittings/view_all_categories.html:70
+#: templates/fittings/view_all_categories.html:71
 msgid ""
 "*Note: Fit counts may be inaccurate as fits marked independently of "
 "doctrines may be counted more than once."
 msgstr ""
+"*설명 : 피팅과 무관하게 각 독트린에 중복으로 들어가는 일이 있으니 피팅 개수"
+"는 정확하지 않을 수 있습니다."
 
-#: templates/fittings/view_all_fits.html:21
+#: templates/fittings/view_all_fits.html:29
 msgid "Fit List"
-msgstr ""
+msgstr "피팅 목록"
 
-#: templates/fittings/view_all_fits.html:33
-#: templates/fittings/view_category.html:113
-#: templates/fittings/view_doctrine.html:76
-msgid "Ship Type"
-msgstr ""
-
-#: templates/fittings/view_all_fits.html:39
+#: templates/fittings/view_all_fits.html:37
 #: templates/fittings/view_category.html:119
-#: templates/fittings/view_doctrine.html:82
+#: templates/fittings/view_doctrine.html:76
 msgid "No Fits Found"
-msgstr ""
+msgstr "저장된 피팅이 없습니다."
+
+#: templates/fittings/view_all_fits.html:44
+#: templates/fittings/view_category.html:113
+#: templates/fittings/view_doctrine.html:83
+msgid "Ship Type"
+msgstr "함선 종류"
 
 #: templates/fittings/view_category.html:53
 msgid "Groups"
-msgstr ""
+msgstr "그룹"
 
 #: templates/fittings/view_category.html:58
 msgid "Category is public"
-msgstr ""
+msgstr "이 카테고리는 모든 사람이 볼 수 있습니다."
 
-#: templates/fittings/view_category.html:66 templates/fittings/view_fit.html:77
+#: templates/fittings/view_category.html:66 templates/fittings/view_fit.html:85
 msgid "Fittings"
-msgstr ""
+msgstr "피팅"
 
 #: templates/fittings/view_doctrine.html:17 templates/fittings/view_fit.html:17
 msgid "Are you sure?"
-msgstr ""
+msgstr "계속 하시겠습니까?"
 
-#: templates/fittings/view_doctrine.html:20
+#: templates/fittings/view_doctrine.html:21
 msgid "Are you sure you wish to delete this doctrine?"
-msgstr ""
+msgstr "해당 독트린을 삭제하시겠습니까?"
 
 #: templates/fittings/view_doctrine.html:22 templates/fittings/view_fit.html:22
 msgid "This action is permanent."
-msgstr ""
+msgstr "삭제 후 되돌릴 수 없습니다."
 
-#: templates/fittings/view_doctrine.html:25 templates/fittings/view_fit.html:25
+#: templates/fittings/view_doctrine.html:26 templates/fittings/view_fit.html:25
 msgid "No - Close"
-msgstr ""
+msgstr "아니오 - 닫기"
 
-#: templates/fittings/view_doctrine.html:26 templates/fittings/view_fit.html:26
+#: templates/fittings/view_doctrine.html:27 templates/fittings/view_fit.html:26
 msgid "Yes - Delete"
-msgstr ""
+msgstr "네 - 삭제"
 
-#: templates/fittings/view_doctrine.html:37
+#: templates/fittings/view_doctrine.html:38
 msgid "Doctrine Information"
-msgstr ""
+msgstr "독트린 정보"
 
-#: templates/fittings/view_doctrine.html:40
+#: templates/fittings/view_doctrine.html:42
 msgid "Delete Doctrine"
-msgstr ""
+msgstr "독트린 삭제"
 
-#: templates/fittings/view_doctrine.html:57
+#: templates/fittings/view_doctrine.html:60 templates/fittings/view_fit.html:72
 msgid "Created"
-msgstr ""
+msgstr "생성된 날짜"
 
-#: templates/fittings/view_doctrine.html:60
+#: templates/fittings/view_doctrine.html:64 templates/fittings/view_fit.html:76
 msgid "Last Updated"
-msgstr ""
+msgstr "수정된 날짜"
 
-#: templates/fittings/view_doctrine.html:69
+#: templates/fittings/view_doctrine.html:73
 msgid "Doctrine Fits"
-msgstr ""
+msgstr "독트린 피팅"
 
 #: templates/fittings/view_fit.html:20
 msgid "Are you sure you wish to delete this fit?"
-msgstr ""
+msgstr "해당 피팅을 삭제하시겠습니까?"
 
 #: templates/fittings/view_fit.html:42
 msgid "Close"
-msgstr ""
+msgstr "닫기"
 
 #: templates/fittings/view_fit.html:53
 msgid "Fit Information"
-msgstr ""
+msgstr "피팅 정보"
 
 #: templates/fittings/view_fit.html:56
 msgid "Delete Fit"
-msgstr ""
+msgstr "피팅 삭제"
 
 #: templates/fittings/view_fit.html:58
 msgid "Edit/Update Fit"
-msgstr ""
+msgstr "피팅 수정"
 
-#: templates/fittings/view_fit.html:152 templates/fittings/view_fit.html:191
+#: templates/fittings/view_fit.html:160 templates/fittings/view_fit.html:199
 msgid "Hull"
 msgstr ""
 
-#: templates/fittings/view_fit.html:158
+#: templates/fittings/view_fit.html:166
 msgid "Fitting Notes"
-msgstr ""
+msgstr "피팅 설명"
 
-#: templates/fittings/view_fit.html:178
+#: templates/fittings/view_fit.html:184
+msgid "Save to EVE"
+msgstr "EVE 캐릭터에 저장"
+
+#: templates/fittings/view_fit.html:186
 msgid "Copy Buy All"
-msgstr ""
+msgstr "전체 구입"
 
-#: templates/fittings/view_fit.html:182
+#: templates/fittings/view_fit.html:190
 msgid "Copy Fit (EFT)"
-msgstr ""
+msgstr "피팅 복사 (EFT)"
 
-#: templates/fittings/view_fit.html:194
+#: templates/fittings/view_fit.html:202
 msgid "SubSystems"
 msgstr ""
 
-#: templates/fittings/view_fit.html:200
+#: templates/fittings/view_fit.html:208
 msgid "High Slots"
 msgstr ""
 
-#: templates/fittings/view_fit.html:201
+#: templates/fittings/view_fit.html:209
 msgid "No High Slot Items"
 msgstr ""
 
-#: templates/fittings/view_fit.html:210
+#: templates/fittings/view_fit.html:218
 msgid "Medium Slots"
 msgstr ""
 
-#: templates/fittings/view_fit.html:211
+#: templates/fittings/view_fit.html:219
 msgid "No Medium Slot Items"
 msgstr ""
 
-#: templates/fittings/view_fit.html:220
+#: templates/fittings/view_fit.html:228
 msgid "Low Slots"
 msgstr ""
 
-#: templates/fittings/view_fit.html:221
+#: templates/fittings/view_fit.html:229
 msgid "No Low Slot Items"
 msgstr ""
 
-#: templates/fittings/view_fit.html:230
+#: templates/fittings/view_fit.html:238
 msgid "Rig Slots"
 msgstr ""
 
-#: templates/fittings/view_fit.html:231
+#: templates/fittings/view_fit.html:239
 msgid "No Rig Slot Items"
 msgstr ""
 
-#: templates/fittings/view_fit.html:236
+#: templates/fittings/view_fit.html:244
 msgid "Service Slots"
 msgstr ""
 
-#: templates/fittings/view_fit.html:247
+#: templates/fittings/view_fit.html:255
 msgid "Fighter Tubes"
 msgstr ""
 
-#: templates/fittings/view_fit.html:254
+#: templates/fittings/view_fit.html:262
 msgid "Cargo Bay"
 msgstr ""
 
-#: templates/fittings/view_fit.html:258
+#: templates/fittings/view_fit.html:266
 msgid "Drone Bay"
 msgstr ""
 
-#: templates/fittings/view_fit.html:262
+#: templates/fittings/view_fit.html:270
 msgid "Fighter Bay"
 msgstr ""

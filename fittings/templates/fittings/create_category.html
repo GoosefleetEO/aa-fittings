@@ -117,10 +117,26 @@ color_picker_wrapper.style.backgroundColor = color_picker.value;
 
 new SlimSelect({
     select: "#groupSelect",
-    hideSelectedOption: true
+    hideSelectedOption: true,
+    placeholder: '{% translate "Select Value" %}',
+    searchText: '{% translate "No Results" %}',
+    searchPlaceholder: '{% translate "Search" %}'
 });
 
-new SlimSelect({select: "#fitSelect", hideSelectedOption: true});
-new SlimSelect({select: "#docSelect", hideSelectedOption: true});
+new SlimSelect({
+    select: "#fitSelect",
+    hideSelectedOption: true,
+    placeholder: '{% translate "Select Value" %}',
+    searchText: '{% translate "No Results" %}',
+    searchPlaceholder: '{% translate "Search" %}'
+});
+
+new SlimSelect({
+    select: "#docSelect",
+    hideSelectedOption: true,
+    placeholder: '{% translate "Select Value" %}',
+    searchText: '{% translate "No Results" %}',
+    searchPlaceholder: '{% translate "Search" %}'
+});
 
 {% endblock %}
