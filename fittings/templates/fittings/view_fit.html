@@ -36,7 +36,7 @@
                     <h4 class="modal-title" id="modalTitle">{{ fit.name }}</h4>
                 </div>
                 <div class="modal-body">
-                    <textarea style="width: 100%; height: 100%" rows="25" onclick="this.select()">{{ fit.eft }}</textarea>
+                    <textarea style="width: 100%; height: 100%" rows="25" onclick="this.select()" readonly>{{ fit.eft }}</textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{% translate "Close" %}</button>
