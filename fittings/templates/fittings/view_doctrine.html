@@ -117,7 +117,10 @@
 
 {% block extra_script %}
      $(document).ready(function(){
-        $('#fitsTable').DataTable();
+        $('#fitsTable').DataTable({
+            paging: false,
+            order: [[1, 'asc']],
+        });
         $('[data-toggle="tooltip"]').tooltip();
     })
 {% endblock %}
