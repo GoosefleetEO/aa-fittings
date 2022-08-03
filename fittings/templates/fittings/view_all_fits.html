@@ -70,7 +70,9 @@
 
 {% block extra_script %}
     $(document).ready(function(){
-        $('#fitTable').DataTable();
+        $('#fitTable').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/{{ LANGUAGE_CODE }}.json' },
+        });
         $('[data-toggle="tooltip"]').tooltip();
     })
 {% endblock %}
