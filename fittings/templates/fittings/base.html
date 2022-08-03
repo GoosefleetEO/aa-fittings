@@ -1,5 +1,6 @@
 {% extends 'allianceauth/base.html' %}
 {% load i18n %}
+{% load navactive %}
 {% block extra_css %}
     <style>
         .flex-container {
@@ -41,9 +42,11 @@
                         </button>
                         <a class="navbar-brand" href="{% url 'fittings:dashboard' %}">{% translate "Fittings and Doctrines" %}</a>
                     </div>
-                    <ul class="nav navbar-nav navbar-left">
-                            <li> <a href="{% url 'fittings:view_all_fits' %}">{% translate "View All Fits" %}</a></li>
-                            <li><a href="{% url 'fittings:view_all_categories' %}">{% translate "View All Categories" %}</a></li>
+                    <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                            <li class="{% navactive request 'fittings:dashboard fittings:add_doctrine fittings:view_doctrine fittings:delete_doctrine fittings:edit_doctrine' %}"><a href="{% url 'fittings:dashboard' %}">{% translate "View All Doctrines" %}</a></li>
+                            <li class="{% navactive request 'fittings:add_fit fittings:view_all_fits fittings:view_fit fittings:delete_fit fittings:save_fit fittings:edit_fit' %}"><a href="{% url 'fittings:view_all_fits' %}">{% translate "View All Fits" %}</a></li>
+                            <li class="{% navactive request 'fittings:view_all_categories fittings:add_category fittings:view_category fittings:edit_category fittings:delete_category' %}"><a href="{% url 'fittings:view_all_categories' %}">{% translate "View All Categories" %}</a></li>
                     </ul>
                     {% if perms.fittings.manage %}
                         <div class="dropdown pull-right" style="margin-top: .8em;">
@@ -57,6 +60,7 @@
                             </ul>
                         </div>
                     {% endif %}
+                    </div>
                 </div>
             </nav>
             {% block fittings_block %}{% endblock %}
