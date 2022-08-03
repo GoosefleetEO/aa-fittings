@@ -70,7 +70,7 @@
                     </dd>
                     {% if fit.created %}
                     <dt>{% translate "Created" %}</dt>
-                        {% if LANGUAGE_CODE == 'ko' %}
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
                             <dd>{{ fit.created|date:'Y-m-d / H:i:s' }}</dd>
                         {% else %}
                             <dd>{{ fit.created|date:'d M Y H:i:s' }}</dd>
@@ -78,7 +78,7 @@
                     {% endif %}
                     {% if fit.last_updated %}
                         <dt>{% translate "Last Updated" %}</dt>
-                        {% if LANGUAGE_CODE == 'ko' %}
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
                             <dd>{{ fit.last_updated|date:'Y-m-d / H:i:s' }}</dd>
                         {% else %}
                             <dd>{{ fit.last_updated|date:'d M Y H:i:s' }}</dd>

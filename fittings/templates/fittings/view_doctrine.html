@@ -58,7 +58,7 @@
                     <dd><pre>{{ doctrine.description|break_html_lines|striptags }}</pre></dd>
                     {% if doctrine.created %}
                     <dt>{% translate "Created" %}</dt>
-                        {% if LANGUAGE_CODE == 'ko' %}
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
                             <dd>{{ doctrine.created|date:'Y-m-d / H:i:s' }}</dd>
                         {% else %}
                             <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
@@ -66,7 +66,7 @@
                     {% endif %}
                     {% if doctrine.last_updated %}
                         <dt>{% translate "Last Updated" %}</dt>
-                        {% if LANGUAGE_CODE == 'ko' %}
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
                             <dd>{{ doctrine.last_updated|date:'Y-m-d / H:i:s' }}</dd>
                         {% else %}
                             <dd>{{ doctrine.last_updated|date:'d M Y H:i:s' }}</dd>
