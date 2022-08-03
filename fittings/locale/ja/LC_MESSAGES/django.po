@@ -266,15 +266,15 @@ msgstr "カテゴリが見つかりません"
 
 #: templates/fittings/view_all_categories.html:40
 msgid "Doctrines Assigned"
-msgstr "ドクトリンが割り当てられました"
+msgstr "割り当てられたドクトリン"
 
 #: templates/fittings/view_all_categories.html:41
 msgid "Fittings Assigned"
-msgstr "Fitが割り当てられました"
+msgstr "割り当てられたfit"
 
 #: templates/fittings/view_all_categories.html:43
 msgid "Groups Assigned"
-msgstr "グループが割り当てられました"
+msgstr "割り当てられたグループ"
 
 #: templates/fittings/view_all_categories.html:56
 #: templates/fittings/view_category.html:29
@@ -291,7 +291,7 @@ msgid ""
 "*Note: Fit counts may be inaccurate as fits marked independently of "
 "doctrines may be counted more than once."
 msgstr ""
-"*注意: Fitの数は、ドクトリンごとに同じFitが複数回カウントされるため、正確でない場合が "
+"*注意: Fitの数は、ドクトリンごとに同じものが複数回カウントされるため、正確でない場合が "
 "あります。"
 
 #: templates/fittings/view_all_fits.html:29
