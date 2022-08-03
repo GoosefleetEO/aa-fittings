@@ -34,7 +34,7 @@
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".fittings-menus-collapse" aria-expanded="false">
                             <span class="sr-only">{% translate "Toggle navigation" %}</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -42,7 +42,7 @@
                         </button>
                         <a class="navbar-brand" href="{% url 'fittings:dashboard' %}">{% translate "Fittings and Doctrines" %}</a>
                     </div>
-                    <div class="collapse navbar-collapse">
+                    <div class="collapse navbar-collapse fittings-menus-collapse">
                     <ul class="nav navbar-nav">
                             <li class="{% navactive request 'fittings:dashboard fittings:add_doctrine fittings:view_doctrine fittings:delete_doctrine fittings:edit_doctrine' %}"><a href="{% url 'fittings:dashboard' %}">{% translate "View All Doctrines" %}</a></li>
                             <li class="{% navactive request 'fittings:add_fit fittings:view_all_fits fittings:view_fit fittings:delete_fit fittings:save_fit fittings:edit_fit' %}"><a href="{% url 'fittings:view_all_fits' %}">{% translate "View All Fits" %}</a></li>
