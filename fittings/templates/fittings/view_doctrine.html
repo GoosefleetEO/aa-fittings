@@ -55,7 +55,7 @@
                 <hr />
                 <dl>
                     <dt>{% translate "Description" %}</dt>
-                    <dd>{{ doctrine.description|break_html_lines|striptags }}</dd>
+                    <dd><pre>{{ doctrine.description|break_html_lines|striptags }}</pre></dd>
                     {% if doctrine.created %}
                     <dt>{% translate "Created" %}</dt>
                         {% if LANGUAGE_CODE == 'ko' %}
