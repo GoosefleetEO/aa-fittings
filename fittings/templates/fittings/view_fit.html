@@ -36,7 +36,7 @@
                     <h4 class="modal-title" id="modalTitle">{{ fit.name }}</h4>
                 </div>
                 <div class="modal-body">
-                    <textarea style="width: 100%; height: 100%" rows="25" onclick="this.select()">{{ fit.eft }}</textarea>
+                    <textarea style="width: 100%; height: 100%" rows="25" onclick="this.select()" readonly>{{ fit.eft }}</textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{% translate "Close" %}</button>
@@ -70,11 +70,19 @@
                     </dd>
                     {% if fit.created %}
                     <dt>{% translate "Created" %}</dt>
-                    <dd>{{ fit.created|date:'d M Y H:i:s' }}</dd>
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
+                            <dd>{{ fit.created|date:'Y-m-d / H:i:s' }}</dd>
+                        {% else %}
+                            <dd>{{ fit.created|date:'d M Y H:i:s' }}</dd>
+                        {% endif %}
                     {% endif %}
                     {% if fit.last_updated %}
                         <dt>{% translate "Last Updated" %}</dt>
-                        <dd>{{ fit.last_updated|date:'d M Y H:i:s' }}</dd>
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
+                            <dd>{{ fit.last_updated|date:'Y-m-d / H:i:s' }}</dd>
+                        {% else %}
+                            <dd>{{ fit.last_updated|date:'d M Y H:i:s' }}</dd>
+                        {% endif %}
                     {% endif %}
                 </dl>
             </div>
@@ -181,7 +189,7 @@
               <h4 class="panel-title">
                 {% translate "Fit" %}
                   <div class="pull-right">
-                    <a href="{% url 'fittings:save_fit' fit.pk %}" class="btn btn-xs btn-success" style="margin-top: -2px;">Save to EVE</a>
+                    <a href="{% url 'fittings:save_fit' fit.pk %}" class="btn btn-xs btn-success" style="margin-top: -2px;">{% translate "Save to EVE" %}</a>
                     <button class='btn btn-xs btn-success' id="buyAllButton" style="margin-top: -2px;" data-clipboard-text="{{fit.ship_type.type_name}}&#10;{% if fitting.LoSlot0 %}{{fitting.LoSlot0.item_name}}&#10;{% endif %}{% if fitting.LoSlot1 %}{{fitting.LoSlot1.item_name}}&#10;{% endif %}{% if fitting.LoSlot2 %}{{fitting.LoSlot2.item_name}}&#10;{% endif %}{% if fitting.LoSlot3 %}{{fitting.LoSlot3.item_name}}&#10;{% endif %}{% if fitting.LoSlot4 %}{{fitting.LoSlot4.item_name}}&#10;{% endif %}{% if fitting.LoSlot5 %}{{fitting.LoSlot5.item_name}}&#10;{% endif %}{% if fitting.LoSlot6 %}{{fitting.LoSlot6.item_name}}&#10;{% endif %}{% if fitting.LoSlot7 %}{{fitting.LoSlot7.item_name}}&#10;{% endif %}{% if fitting.MedSlot0 %}{{fitting.MedSlot0.item_name}}&#10;{% endif %}{% if fitting.MedSlot1 %}{{fitting.MedSlot1.item_name}}&#10;{% endif %}{% if fitting.MedSlot2 %}{{fitting.MedSlot2.item_name}}&#10;{% endif %}{% if fitting.MedSlot3 %}{{fitting.MedSlot3.item_name}}&#10;{% endif %}{% if fitting.MedSlot4 %}{{fitting.MedSlot4.item_name}}&#10;{% endif %}{% if fitting.MedSlot5 %}{{fitting.MedSlot5.item_name}}&#10;{% endif %}{% if fitting.MedSlot6 %}{{fitting.MedSlot6.item_name}}&#10;{% endif %}{% if fitting.MedSlot7 %}{{fitting.MedSlot7.item_name}}&#10;{% endif %}{% if fitting.HiSlot0 %}{{fitting.HiSlot0.item_name}}&#10;{% endif %}{% if fitting.HiSlot1 %}{{fitting.HiSlot1.item_name}}&#10;{% endif %}{% if fitting.HiSlot2 %}{{fitting.HiSlot2.item_name}}&#10;{% endif %}{% if fitting.HiSlot3 %}{{fitting.HiSlot3.item_name}}&#10;{% endif %}{% if fitting.HiSlot4 %}{{fitting.HiSlot4.item_name}}&#10;{% endif %}{% if fitting.HiSlot5 %}{{fitting.HiSlot5.item_name}}&#10;{% endif %}{% if fitting.HiSlot6 %}{{fitting.HiSlot6.item_name}}&#10;{% endif %}{% if fitting.HiSlot7 %}{{fitting.HiSlot7.item_name}}&#10;{% endif %}{% if fitting.RigSlot0 %}{{fitting.RigSlot0.item_name}}&#10;{% endif %}{% if fitting.RigSlot1 %}{{fitting.RigSlot1.item_name}}&#10;{% endif %}{% if fitting.RigSlot2 %}{{fitting.RigSlot2.item_name}}&#10;{% endif %}{% if fitting.SubSystemSlot0 %}{{fitting.SubSystemSlot0.item_name}}&#10;{% endif %}{% if fitting.SubSystemSlot1 %}{{fitting.SubSystemSlot1.item_name}}&#10;{% endif %}{% if fitting.SubSystemSlot2 %}{{fitting.SubSystemSlot2.item_name}}&#10;{% endif %}{% if fitting.SubSystemSlot3 %}{{fitting.SubSystemSlot3.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot0 %}{{fitting.ServiceSlot0.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot1 %}{{fitting.ServiceSlot1.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot2 %}{{fitting.ServiceSlot2.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot3 %}{{fitting.ServiceSlot3.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot4 %}{{fitting.ServiceSlot4.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot5 %}{{fitting.ServiceSlot5.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot6 %}{{fitting.ServiceSlot6.item_name}}&#10;{% endif %}{% if fitting.ServiceSlot7 %}{{fitting.ServiceSlot7.item_name}}&#10;{% endif %}{% if fitting.FighterTube0 %}{{fitting.FighterTube0.item_name}}&#10;{% endif %}{% if fitting.FighterTube1 %}{{fitting.FighterTube1.item_name}}&#10;{% endif %}{% if fitting.FighterTube2 %}{{fitting.FighterTube2.item_name}}&#10;{% endif %}{% if fitting.FighterTube3 %}{{fitting.FighterTube3.item_name}}&#10;{% endif %}{% if fitting.FighterTube4 %}{{fitting.FighterTube4.item_name}}&#10;{% endif %}{% for ammo in fitting.Cargo %}{{ammo.item_name}} x{{ammo.quantity}}&#10;{% endfor %}{% for fighter in fitting.FighterBay %}{{fighter.item_name}} x{{fighter.quantity}}&#10;{% endfor %}{% for drone in fitting.DroneBay %}{{drone.item_name}} x{{drone.quantity}}&#10;{% endfor %}">
                         {% translate "Copy Buy All" %}
                     </button>

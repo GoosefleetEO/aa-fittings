@@ -55,14 +55,22 @@
                 <hr />
                 <dl>
                     <dt>{% translate "Description" %}</dt>
-                    <dd>{{ doctrine.description|break_html_lines|striptags }}</dd>
+                    <dd><pre>{{ doctrine.description|break_html_lines|striptags }}</pre></dd>
                     {% if doctrine.created %}
                     <dt>{% translate "Created" %}</dt>
-                    <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
+                            <dd>{{ doctrine.created|date:'Y-m-d / H:i:s' }}</dd>
+                        {% else %}
+                            <dd>{{ doctrine.created|date:'d M Y H:i:s' }}</dd>
+                        {% endif %}
                     {% endif %}
                     {% if doctrine.last_updated %}
                         <dt>{% translate "Last Updated" %}</dt>
-                        <dd>{{ doctrine.last_updated|date:'d M Y H:i:s' }}</dd>
+                        {% if LANGUAGE_CODE == 'ko' or LANGUAGE_CODE == 'ja' %}
+                            <dd>{{ doctrine.last_updated|date:'Y-m-d / H:i:s' }}</dd>
+                        {% else %}
+                            <dd>{{ doctrine.last_updated|date:'d M Y H:i:s' }}</dd>
+                        {% endif %}
                     {% endif %}
                 </dl>
             </div>
@@ -109,7 +117,12 @@
 
 {% block extra_script %}
      $(document).ready(function(){
-        $('#fitsTable').DataTable();
+        $('#fitsTable').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/{{ LANGUAGE_CODE }}.json' },
+            paging: false,
+            searching: false,
+            order: [[1, 'asc']],
+        });
         $('[data-toggle="tooltip"]').tooltip();
     })
 {% endblock %}
