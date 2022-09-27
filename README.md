@@ -82,16 +82,9 @@ $ pip install fittings
 
 Configure your AA settings (`local.py`) as follows:
 
-- Add `'fittings',` to `INSTALLED_APPS`
+- Add `'eveuniverse',` and `'fittings',` to `INSTALLED_APPS`
 - Add these line to the bottom of the settings file to have module name updates
 
-```python
-# Fittings Module
-CELERYBEAT_SCHEDULE['fittings_update_types'] = {
-    'task': 'fittings.tasks.verify_server_version_and_update_types',
-    'schedule': crontab(minute=0, hour='12'),
-}
-```
 ### 3. Finalize Install
 Run migrations and copy static files. 
 
