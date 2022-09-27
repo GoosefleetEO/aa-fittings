@@ -3,121 +3,27 @@ from django.db import models
 from django.db.models import Subquery, OuterRef
 from model_utils import Choices
 
-from .managers import TypeManager, DogmaAttributeManager, DogmaEffectManager, ItemCategoryManager, ItemGroupManager
-
-
-# Category Model
-class ItemCategory(models.Model):
-    category_id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=250)
-    published = models.BooleanField(default=True)
-
-    objects = ItemCategoryManager()
-
-    class Meta:
-        default_permissions = ()
-
-
-# Group Model
-class ItemGroup(models.Model):
-    group_id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=250)
-    category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE)
-    published = models.BooleanField(default=True)
-
-    objects = ItemGroupManager()
-
-    class Meta:
-        default_permissions = ()
-
-
-# Type Model
-class Type(models.Model):
-    type_name = models.CharField(max_length=500)
-    type_id = models.BigIntegerField(primary_key=True)
-    # group_id = models.IntegerField()    # This is essentially a FK field.
-    group = models.ForeignKey(ItemGroup, on_delete=models.CASCADE, null=True)
-    published = models.BooleanField(default=False)
-    mass = models.FloatField(null=True)
-    capacity = models.FloatField(null=True)
-    description = models.CharField(max_length=5000, null=True)  # Not sure of the actual max.
-    volume = models.FloatField(null=True)
-    packaged_volume = models.FloatField(null=True)
-    portion_size = models.IntegerField(null=True)
-    radius = models.FloatField(null=True)
-    graphic_id = models.IntegerField(null=True)
-    icon_id = models.IntegerField(null=True)
-    market_group_id = models.IntegerField(null=True)
-
-    objects = TypeManager()
-
-    class Meta:
-        default_permissions = ()
-
-
-class TypeHistory(models.Model):
-    type_id = models.BigIntegerField()
-    type_name = models.CharField(max_length=500)
-
-    class Meta:
-        default_permissions = ()
-
-
-# Dogma Attribute
-class DogmaAttribute(models.Model):
-    # 12 - Low Slots | 13 - Med Slots | 14 - High Slots
-    # 1137 - Rig Slots | 1367 - Sub System Slots | 2056 - Service Slots
-    # 182 | 183 | 184 --- Req Skill 1/2/3
-    # 277 - Req. Skill 1 Lvl | 278 | 279 -- Req Skill 1/2 Lvl
-    # 1374 - HiSlotModifier | 1375 - MedSlotModifier | 1376 - RigSlotModifier
-    type = models.ForeignKey(Type, on_delete=models.DO_NOTHING, related_name='dogma_attributes')
-    attribute_id = models.IntegerField()
-    value = models.FloatField()
-
-    objects = DogmaAttributeManager()
-
-    class Meta:
-        default_permissions = ()
-        constraints = [
-            models.UniqueConstraint(fields=('attribute_id', 'type'), name='unique_type_and_attribute_id')
-        ]
-
-
-# Dogma Effect
-class DogmaEffect(models.Model):
-    # 11 - Low Power | 12 - High Power | 13 - Med Power
-    # 2663 - Rig Slot | 3772 - Subsystem | 6306 - Service Slot
-    type = models.ForeignKey(Type, on_delete=models.DO_NOTHING, related_name='dogma_effects')
-    effect_id = models.IntegerField()
-    is_default = models.BooleanField()
-
-    objects = DogmaEffectManager()
-
-    class Meta:
-        default_permissions = ()
-        constraints = [
-            models.UniqueConstraint(fields=('effect_id', 'type'), name='unique_type_and_effect_id')
-        ]
+from eveuniverse.models import EveType
 
 
 # Fitting
 class Fitting(models.Model):
     description = models.TextField(max_length=500)
     name = models.CharField(max_length=255, null=False)
-    ship_type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
+    ship_type = models.ForeignKey(EveType, on_delete=models.DO_NOTHING)
     ship_type_type_id = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
-        return "{} ({})".format(self.ship_type.type_name, self.name)
+        return "{} ({})".format(self.ship_type.name, self.name)
 
     @property
     def eft(self):
-        types = Type.objects.filter(type_id=OuterRef('type_id'))
-        items = FittingItem.objects.filter(fit=self).annotate(item_name=Subquery(types.values('type_name')))
+        types = EveType.objects.filter(id=OuterRef('id'))
+        items = FittingItem.objects.filter(fit=self).annotate(item_name=Subquery(types.values('name')))
 
-        eft = '[' + self.ship_type.type_name + ', ' + self.name + ']\n\n'
+        eft = '[' + self.ship_type.name + ', ' + self.name + ']\n\n'
 
         temp = {'Cargo': [], 'FighterBay': [], 'DroneBay': []}
         
@@ -176,6 +82,17 @@ class Fitting(models.Model):
 
 # Fitting items
 class FittingItem(models.Model):
+    # Dogma Attribute Notes
+    # =====================
+    # 12 - Low Slots | 13 - Med Slots | 14 - High Slots
+    # 1137 - Rig Slots | 1367 - Sub System Slots | 2056 - Service Slots
+    # 182 | 183 | 184 --- Req Skill 1/2/3
+    # 277 - Req. Skill 1 Lvl | 278 | 279 -- Req Skill 1/2 Lvl
+    # 1374 - HiSlotModifier | 1375 - MedSlotModifier | 1376 - RigSlotModifier
+    # Dogma Effect Notes
+    # =====================
+    # 11 - Low Power | 12 - High Power | 13 - Med Power
+    # 2663 - Rig Slot | 3772 - Subsystem | 6306 - Service Slot
     fit = models.ForeignKey(Fitting, on_delete=models.CASCADE, related_name='items')
     _flag_enum = Choices('Cargo', 'DroneBay', 'FighterBay', 'HiSlot0', 'HiSlot1', 'HiSlot2',
                          'HiSlot3', 'HiSlot4', 'HiSlot5', 'HiSlot6', 'HiSlot7', 'Invalid',
@@ -187,8 +104,11 @@ class FittingItem(models.Model):
                          'SubSystemSlot1', 'SubSystemSlot2', 'SubSystemSlot3')
     flag = models.CharField(max_length=25, choices=_flag_enum, default='Invalid')
     quantity = models.IntegerField(default=1)
-    type_fk = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
+    type_fk = models.ForeignKey(EveType, on_delete=models.DO_NOTHING)
     type_id = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.type_fk.name} - {self.flag} ({self.fit.name})'
 
     class Meta:
         default_permissions = (())
@@ -236,16 +156,4 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-        default_permissions = (())
-
-
-# Unified Category
-class ServerVersion(models.Model):
-    id = models.BigIntegerField(primary_key=True)
-
-    def __str__(self):
-        return f"Server Version: {self.id}"
-
-    class Meta:
-        verbose_name = "ServerVersion"
         default_permissions = (())

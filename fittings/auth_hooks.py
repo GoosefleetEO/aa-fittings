@@ -26,6 +26,7 @@ def register_menu():
 def register_url():
     return UrlHook(urls, 'fittings', '^fittings/')
 
+
 @hooks.register('discord_cogs_hook')
 def register_cogs():
     if FITTINGS_AADISCORDBOT_INTEGRATION is True:
