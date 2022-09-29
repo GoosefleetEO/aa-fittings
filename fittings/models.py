@@ -10,7 +10,7 @@ from eveuniverse.models import EveType
 class Fitting(models.Model):
     description = models.TextField(max_length=500)
     name = models.CharField(max_length=255, null=False)
-    ship_type = models.ForeignKey(EveType, on_delete=models.DO_NOTHING)
+    ship_type = models.ForeignKey(EveType, to_field="id", on_delete=models.DO_NOTHING)
     ship_type_type_id = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -104,7 +104,7 @@ class FittingItem(models.Model):
                          'SubSystemSlot1', 'SubSystemSlot2', 'SubSystemSlot3')
     flag = models.CharField(max_length=25, choices=_flag_enum, default='Invalid')
     quantity = models.IntegerField(default=1)
-    type_fk = models.ForeignKey(EveType, on_delete=models.DO_NOTHING)
+    type_fk = models.ForeignKey(EveType, to_field="id", on_delete=models.DO_NOTHING)
     type_id = models.IntegerField()
 
     def __str__(self):
