@@ -285,7 +285,7 @@ def view_fit(request, fit_id):
 
         return redirect('fittings:dashboard')
 
-    types = EveType.objects.filter(id=OuterRef('id'))
+    types = EveType.objects.filter(id=OuterRef('type_id'))
     items = FittingItem.objects.filter(fit=fit).annotate(item_name=Subquery(types.values('name')))
 
     fittings = {'Cargo': [], 'FighterBay': [], 'DroneBay': []}

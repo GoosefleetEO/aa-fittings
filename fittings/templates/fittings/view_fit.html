@@ -168,7 +168,7 @@
                                     {% translate "Hull" %}
                                 </div>
                                 <div class="panel-body text-center">
-                                    {{ fit.ship_type.type_name }}
+                                    {{ fit.ship_type.name }}
                                 </div>
                                 <div class="panel-heading text-center">
                                     {% translate "Fitting Notes" %}
@@ -205,7 +205,7 @@
               <div class="panel-body">
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-warning">{% translate "Hull" %}</li>
-                    <li class="list-group-item"><img src="{{ fit.ship_type_type_id|type_render_url:32 }}" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.type_name }}</li>
+                    <li class="list-group-item"><img src="{{ fit.ship_type_type_id|type_render_url:32 }}" title="{{ fit.ship_type.type_name }}"> {{ fit.ship_type.name }}</li>
                     {% if fitting.SubSystemSlot0 %}
                         <li class="list-group-item list-group-item-warning">{% translate "SubSystems" %}</li>
                         <li class="list-group-item"><img src="{{ fitting.SubSystemSlot0.type_id|type_icon_url:32 }}" title="{{ fitting.SubSystemSlot0.item_name }}"> {{fitting.SubSystemSlot0.item_name}}</li>

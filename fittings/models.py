@@ -20,7 +20,7 @@ class Fitting(models.Model):
 
     @property
     def eft(self):
-        types = EveType.objects.filter(id=OuterRef('id'))
+        types = EveType.objects.filter(id=OuterRef('type_id'))
         items = FittingItem.objects.filter(fit=self).annotate(item_name=Subquery(types.values('name')))
 
         eft = '[' + self.ship_type.name + ', ' + self.name + ']\n\n'
