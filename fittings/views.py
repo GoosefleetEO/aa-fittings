@@ -6,9 +6,10 @@ from django.utils.translation import gettext as gt
 from django.db.models import Subquery, OuterRef, Count, Q, Prefetch, F
 from django.shortcuts import render, redirect
 from esi.decorators import token_required
+from eveuniverse.models import EveType
 from itertools import chain
 
-from .models import Doctrine, Fitting, Type, FittingItem, Category
+from .models import Doctrine, Fitting, FittingItem, Category
 from .providers import esi
 from .tasks import create_fit, update_fit
 
@@ -134,33 +135,33 @@ def _build_slots(fit):
     ship = fit.ship_type
     attributes = (12, 13, 14, 1137, 1367, 2056)
 
-    t3c = ship.dogma_attributes.filter(attribute_id=1367).exists()
+    t3c = ship.dogma_attributes.filter(eve_dogma_attribute_id=1367).exists()
 
-    attributes = ship.dogma_attributes.filter(attribute_id__in=attributes)
+    attributes = ship.dogma_attributes.filter(eve_dogma_attribute_id__in=attributes)
 
     slots = {'low': 0, 'med': 0, 'high': 0}
     for attribute in attributes:
-        if attribute.attribute_id == 1367:
+        if attribute.eve_dogma_attribute_id == 1367:
             subAttbs = (1374, 1375, 1376)
             slots['sub'] = 4
             if t3c:
                 for item in FittingItem.objects.filter(fit=fit).exclude(flag='Cargo'):
-                    attbs = item.type_fk.dogma_attributes.filter(attribute_id__in=subAttbs)
+                    attbs = item.type_fk.dogma_attributes.filter(eve_dogma_attribute_id__in=subAttbs)
                     for attb in attbs:
-                        if attb.attribute_id == 1374:
+                        if attb.eve_dogma_attribute_id == 1374:
                             slots['high'] += int(attb.value)
-                        if attb.attribute_id == 1375:
+                        if attb.eve_dogma_attribute_id == 1375:
                             slots['med'] += int(attb.value)
-                        if attb.attribute_id == 1376:
+                        if attb.eve_dogma_attribute_id == 1376:
                             slots['low'] += int(attb.value)
 
-        elif attribute.attribute_id == 12:
+        elif attribute.eve_dogma_attribute_id == 12:
             slots['low'] += int(attribute.value)
-        elif attribute.attribute_id == 13:
+        elif attribute.eve_dogma_attribute_id == 13:
             slots['med'] += int(attribute.value)
-        elif attribute.attribute_id == 14:
+        elif attribute.eve_dogma_attribute_id == 14:
             slots['high'] += int(attribute.value)
-        elif attribute.attribute_id == 1137:
+        elif attribute.eve_dogma_attribute_id == 1137:
             slots['rig'] = int(attribute.value)
 
     return slots
@@ -284,8 +285,8 @@ def view_fit(request, fit_id):
 
         return redirect('fittings:dashboard')
 
-    types = Type.objects.filter(type_id=OuterRef('type_id'))
-    items = FittingItem.objects.filter(fit=fit).annotate(item_name=Subquery(types.values('type_name')))
+    types = EveType.objects.filter(id=OuterRef('id'))
+    items = FittingItem.objects.filter(fit=fit).annotate(item_name=Subquery(types.values('name')))
 
     fittings = {'Cargo': [], 'FighterBay': [], 'DroneBay': []}
 
