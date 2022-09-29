@@ -96,8 +96,15 @@ $ python manage.py collectstatic
 Restart your supervisor tasks.
 
 ### 4. Populate Types
-As of v1.0.0 there is no need to populate types from SDE. This will be done on the fly from
-ESI. 
+Now that fittings has transitioned to using [django-eveuniverse](https://gitlab.com/ErikKalkoken/django-eveuniverse) to handle static data this step is optional.
+
+You can choose to run the following command to preload the type information for most ships and modules in the game, or you can skip this step and let them be created on an as-needed basis.
+
+Keep in mind that running this command will take a while but will save you time later, if you do not run this command adding fits may take some time if they contain new types.
+
+```bash
+$ python manage.py fittings_preload_data
+```
 
 ## Updating
 To update your existing installation of Fittings first enable your virtual environment.

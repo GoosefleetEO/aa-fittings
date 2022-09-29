@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 
-class LoadCommand(BaseCommand):
+class Command(BaseCommand):
     help = "Preloads common ship and module types from ESI."
 
     def handle(self, *args, **kwargs):
