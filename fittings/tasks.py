@@ -2,8 +2,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task
+from eveuniverse.models import EveType, EveEntity
 
-from .models import Fitting, FittingItem, ServerVersion, Type, DogmaEffect, DogmaAttribute
+from .models import Fitting, FittingItem
 from .providers import esi
 
 logger = get_extension_logger(__name__)
@@ -122,7 +123,7 @@ class Section:
                     types.append(_get_type(line.split(quantity)[0].strip()))
                 else:
                     types.append(_get_type(line.strip()))
-        return all(_type is not None and _type.group.category_id == 18 for _type in types)
+        return all(_type is not None and _type.eve_group.eve_category.id == 18 for _type in types)
 
     def isFighterBay(self):
         types = []
@@ -142,9 +143,13 @@ class Section:
 
 def _get_type(type_name):
     try:
-        type_obj = Type.objects.get(type_name=type_name)
+        type_obj = EveType.objects.get(name=type_name)
     except:
-        type_obj = Type.objects.create_type(type_name)
+        # If the type is not already in the db, then we have to resolve type_id before we have eveuniverse
+        # create the object.
+        c = esi.client
+        type_id = c.Universe.post_universe_ids(names=[type_name]).result()['inventory_types'][0]["id"]
+        type_obj = EveType.objects.get_or_create_esi(id=type_id,enabled_sections=[EveType.Section.DOGMAS])
     return type_obj
 
 
@@ -209,18 +214,15 @@ def create_fitting_items(fit, parsed_eft):
     type_names = list(set(type_names))
 
     # Get a list of types missing from the db
-    types = Type.objects.filter(type_name__in=type_names).values_list('type_name', flat=True)
+    types = EveType.objects.filter(name__in=type_names).values_list('name', flat=True)
 
     missing = [x for x in type_names if x not in types]
 
     # Create missing types
-    _processes = []
-    with ThreadPoolExecutor(max_workers=50) as ex:  # Number of workers might need to be tweaked over time.
-        for name in missing:
-            _processes.append(ex.submit(Type.objects.create_type, name))
-
-    for item in as_completed(_processes):
-        _ = item.result()
+    ids = EveEntity.objects.fetch_by_names_esi(missing)\
+        .filter(category=EveEntity.CATEGORY_INVENTORY_TYPE)\
+        .values_list("id", flat=True)
+    _ = EveType.objects.bulk_get_or_create_esi(ids=ids)
 
     # Create the fitting items
     for module in parsed_eft['modules']:
@@ -257,57 +259,3 @@ def update_fit(eft_text, fit_id, description=None):
 
     logger.info("Done updating fit " + fit_id)
 
-
-@shared_task
-def missing_group_type_fix():
-    logger.info("Started updating groups for preexisting types.")
-    type_used = FittingItem.objects.order_by('type_id').values_list('type_id', flat=True).distinct()
-    ship_type_used = Fitting.objects.order_by('ship_type_type_id').values_list('ship_type_type_id', flat=True).distinct()
-    joined_type = list(type_used) + list(ship_type_used)
-    da = DogmaAttribute.objects.exclude(type_id__in=joined_type).delete()
-    de = DogmaEffect.objects.exclude(type_id__in=joined_type).delete()
-    Type.objects.exclude(type_id__in=joined_type).delete()
-    # Grab all types with a null group field.
-    types = Type.objects.filter(group=None)
-
-    _processes = []
-    with ThreadPoolExecutor(max_workers=50) as ex:
-        for _type in types:
-            _processes.append(ex.submit(Type.objects.create_type_from_id, _type.type_id))
-
-    for item in as_completed(_processes):
-        _ = item.result()
-
-    logger.info("Done updating groups.")
-
-
-@shared_task
-def update_used_types():
-    logger.info("Started updating types for preexisting types used in fittings.")
-    fittingItem = FittingItem.objects.order_by('type_id').values_list('type_id', flat=True).distinct()
-    _processes = []
-    with ThreadPoolExecutor(max_workers=50) as ex:
-        for _fitting_item_type_id in fittingItem:
-            _processes.append(ex.submit(Type.objects.update_type_from_id, _fitting_item_type_id))
-
-    for item in as_completed(_processes):
-        _ = item.result()
-
-    logger.info("Done updating type.")
-
-@shared_task
-def verify_server_version_and_update_types():
-    logger.info("Looking up the current eve online server version")
-    currentServerVersion = ServerVersion.objects.all()    
-    if len(currentServerVersion) > 1:
-        raise Exception("Only one server version should be active")
-
-    c = esi.client
-    response = c.Status.get_status().result()
-    serverVersion = response.get("server_version")
-
-    if serverVersion is not None:
-        if len(currentServerVersion) == 0 or currentServerVersion[0].id != int(serverVersion):
-            ServerVersion.objects.all().delete()
-            ServerVersion.objects.create(id=serverVersion)
-            update_used_types.delay()
