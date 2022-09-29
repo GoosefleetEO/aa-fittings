@@ -57,7 +57,7 @@
                                 <div class="col-sm-10" style="margin-top: 5px; margin-bottom: 5px;">
                                     <select multiple="multiple" id="fitSelect" name="fitSelect">
                                         {% for fit in doc_fits %}
-                                            <option value="{{ fit.pk }}" selected>{{ fit.name }} ({{ fit.ship_type.type_name }})</option>
+                                            <option value="{{ fit.pk }}" selected>{{ fit.name }} ({{ fit.ship_type.name }})</option>
                                         {% endfor %}
                                         {% for fit in fits %}
                                             <option value="{{ fit.pk }}">{{ fit.name }} ({{fit.ship_type.type_name}})</option>
@@ -71,7 +71,7 @@
                                     <select class="form-control" name="iconSelect" id="iconSelect" aria-describedby="helpBlock">
                                         <option value="{{ doctrine.icon_url }}" selected> {% translate "Current Icon" %} </option>
                                         {% for ship in ships %}
-                                            <option value="{{ ship.ship_type|type_render_url:64 }}">{{ship.ship_type__type_name}}</option>
+                                            <option value="{{ ship.ship_type|type_render_url:64 }}">{{ship.ship_type__name}}</option>
                                         {% endfor %}
                                     </select>
                                     <span id="helpBlock" class="help-block"> {% translate "If you do not see the ship type that you would like to use for the icon, add a fit that uses that ship type and try again." %}</span>
