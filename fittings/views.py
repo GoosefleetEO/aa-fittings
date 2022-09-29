@@ -341,7 +341,7 @@ def add_doctrine(request):
         return redirect('fittings:dashboard')
 
     fits = Fitting.objects.all()
-    ships = Fitting.objects.order_by('ship_type').values('ship_type', 'ship_type__type_name')\
+    ships = Fitting.objects.order_by('ship_type').values('ship_type', 'ship_type__name')\
         .annotate(a=Count('ship_type'))
     ctx['fittings'] = fits
     ctx['ships'] = ships
